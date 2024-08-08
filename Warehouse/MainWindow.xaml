@@ -35,7 +35,7 @@
                 <StackPanel Margin="4,8,4,2">
                     <ComboBox SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
-                              Width="200"
+                              Width="170"
                               HorizontalAlignment="Left">
                     </ComboBox>
                     <DataGrid x:Name="ComponentsDataGrid"
@@ -50,6 +50,7 @@
                             <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>

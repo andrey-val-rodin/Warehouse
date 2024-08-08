@@ -19,10 +19,27 @@ namespace Warehouse.Model
                     object item = row[name];
                     PropertyInfo p = value;
                     if (p.PropertyType != col.DataType)
-                        item = Convert.ChangeType(item, p.PropertyType);
+                        item = ChangeType(item, p.PropertyType);
                     p.SetValue(model, item, null);
                 }
             }
+        }
+
+        public static object ChangeType(object value, Type conversion)
+        {
+            var t = conversion;
+
+            if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+            {
+                if (value == null)
+                {
+                    return null;
+                }
+
+                t = Nullable.GetUnderlyingType(t);
+            }
+
+            return Convert.ChangeType(value, t);
         }
     }
 }

@@ -29,13 +29,9 @@ namespace Warehouse.ViewModel
             get { return _currentComponent; }
             set
             {
-                if (SetProperty(ref _currentComponent, value) && value != null)
-                    CurrentComponentModel = Component.FromDataRow(value.Row);
+                SetProperty(ref _currentComponent, value);
             }
         }
-
-        //TODO: Is this property really necessary?
-        public Component CurrentComponentModel { get; private set; }
 
         public DataView Components => SqlProvider.GetComponents(CurrentType);
 

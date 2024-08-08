@@ -17,6 +17,9 @@ namespace Warehouse.Model
         [DisplayName("Наличие")]
         public int Amount { get; set; }
 
+        [DisplayName("Цена")]
+        public decimal? Price { get; set; }
+
         static public Component FromDataRow(DataRow row)
         {
             var result = new Component();
