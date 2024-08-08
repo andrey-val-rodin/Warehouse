@@ -1,0 +1,49 @@
+﻿<Window x:Class="Warehouse.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Warehouse"
+        xmlns:viewmodels="clr-namespace:Warehouse.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        mc:Ignorable="d"
+        Title="Склад" Height="450" Width="800">
+    <TabControl>
+        <TabItem>
+            <TabItem.Header>
+                <Label FontSize="14" FontWeight="Bold">Заказы</Label>
+            </TabItem.Header>
+            <TabItem.Content>
+                <StackPanel>
+                    <RadioButton IsChecked="True">iPhone S6</RadioButton>
+                    <RadioButton>LG G 4</RadioButton>
+                    <RadioButton>Lumia 550</RadioButton>
+                </StackPanel>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem DataContext="{Binding ProductViewModel}">
+            <TabItem.Header>
+                <Label FontSize="14" FontWeight="Bold">Изделия</Label>
+            </TabItem.Header>
+            <Slider Minimum="0" Maximum="100" Value="{Binding SliderValue}"></Slider>
+        </TabItem>
+        <TabItem DataContext="{Binding ComponentViewModel}">
+            <TabItem.Header>
+                <Label FontSize="14" FontWeight="Bold">Комплектующие</Label>
+            </TabItem.Header>
+            <TabItem.Content>
+                <StackPanel Margin="4,8,4,2">
+                    <ComboBox SelectedIndex="{Binding CurrentType}"
+                              ItemsSource="{Binding ComponentTypes}"
+                              Width="200"
+                              HorizontalAlignment="Left">
+                    </ComboBox>
+                    <DataGrid ItemsSource="{Binding Path=Components, Mode=OneWay}"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Vertical"
+                              Margin="0,6,0,0">
+                    </DataGrid>
+                </StackPanel>
+            </TabItem.Content>
+        </TabItem>
+    </TabControl>
+</Window>
