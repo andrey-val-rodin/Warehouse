@@ -47,7 +47,7 @@ namespace Warehouse.Database
         {
             var ds = new DataSet("Components");
             SQLiteCommand command;
-            var text = new StringBuilder("SELECT Id, Type, Name, Amount, CAST(Price AS REAL)/100 AS Price FROM Component");
+            var text = new StringBuilder("SELECT Component.Id, Component.Type, Component.Name, Component.Amount, CAST(Component.Price AS REAL)/100 AS Price FROM Component");
             if (type > 0)
             {
                 text.Append(" LEFT JOIN ComponentType ON Type = ComponentType.Id WHERE Component.Type = @t");
