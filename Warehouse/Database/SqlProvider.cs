@@ -27,7 +27,7 @@ namespace Warehouse.Database
 
         public string[] GetComponentTypes()
         {
-            using var command = new SQLiteCommand("SELECT name FROM ComponentType ORDER BY id ASC", _connection);
+            using var command = new SQLiteCommand("SELECT Name FROM ComponentType ORDER BY Id ASC", _connection);
             using var reader = command.ExecuteReader();
             var result = new List<string>();
 
@@ -47,10 +47,10 @@ namespace Warehouse.Database
         {
             var ds = new DataSet("Components");
             SQLiteCommand command;
-            var text = new StringBuilder("SELECT Component.id, Component.name AS 'Наименование', amount AS 'Наличие' FROM Component");
+            var text = new StringBuilder("SELECT * FROM Component");
             if (type > 0)
             {
-                text.Append(" LEFT JOIN ComponentType ON type = ComponentType.id WHERE Component.type = @t");
+                text.Append(" LEFT JOIN ComponentType ON Type = ComponentType.Id WHERE Component.Type = @t");
                 command = new SQLiteCommand(text.ToString(), _connection);
                 command.Parameters.Add(new SQLiteParameter("@t", type));
             }

@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Warehouse"
-        xmlns:viewmodels="clr-namespace:Warehouse.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:viewmodels="clr-namespace:Warehouse.ViewModel"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
         Title="Склад" Height="450" Width="800">
     <TabControl>
@@ -37,10 +38,19 @@
                               Width="200"
                               HorizontalAlignment="Left">
                     </ComboBox>
-                    <DataGrid ItemsSource="{Binding Path=Components, Mode=OneWay}"
+                    <DataGrid x:Name="ComponentsDataGrid"
+                              ItemsSource="{Binding Path=Components, Mode=OneWay}"
                               IsReadOnly="True"
+                              SelectedItem="{Binding CurrentComponent}"
                               GridLinesVisibility="Vertical"
-                              Margin="0,6,0,0">
+                              AutoGenerateColumns="False"
+                              Margin="0,6,0,0"
+                              LoadingRow="DataGrid_LoadingRow">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
+                            <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                        </DataGrid.Columns>
                     </DataGrid>
                 </StackPanel>
             </TabItem.Content>
