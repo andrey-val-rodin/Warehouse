@@ -23,7 +23,7 @@
         </TabItem>
         <TabItem DataContext="{Binding ProductViewModel}">
             <TabItem.Header>
-                <Label FontSize="14" FontWeight="Bold">Изделия</Label>
+                <Label FontSize="14" FontWeight="Bold">Производство</Label>
             </TabItem.Header>
             <Slider Minimum="0" Maximum="100" Value="{Binding SliderValue}"></Slider>
         </TabItem>
@@ -32,8 +32,10 @@
                 <Label FontSize="14" FontWeight="Bold">Комплектующие</Label>
             </TabItem.Header>
             <TabItem.Content>
-                <StackPanel Margin="4,8,4,2">
-                    <ComboBox SelectedIndex="{Binding CurrentType}"
+                <DockPanel Margin="4,8,4,2"
+                           LastChildFill="True">
+                    <ComboBox DockPanel.Dock="Top"
+                        SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
                               Width="170"
                               HorizontalAlignment="Left">
@@ -53,7 +55,7 @@
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                </StackPanel>
+                </DockPanel>
             </TabItem.Content>
         </TabItem>
     </TabControl>

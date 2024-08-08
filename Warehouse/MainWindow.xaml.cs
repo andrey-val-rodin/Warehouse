@@ -11,6 +11,7 @@ namespace Warehouse
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly SolidColorBrush _backgroundBrush = new(Colors.LightYellow);
         public MainWindow()
         {
             InitializeComponent();
@@ -25,7 +26,7 @@ namespace Warehouse
             {
                 var component = Component.FromDataRow(row.Row);
                 if (component.Amount < 1)
-                    e.Row.Background = new SolidColorBrush(Colors.LightYellow);
+                    e.Row.Background = _backgroundBrush;
             }
         }
     }
