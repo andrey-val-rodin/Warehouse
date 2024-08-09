@@ -25,7 +25,7 @@ namespace Warehouse
             if (row != null && sender == ComponentsDataGrid)
             {
                 var component = Component.FromDataRow(row.Row);
-                if (component.Amount < 1)
+                if (component.Remainder < 1)
                     e.Row.Background = _backgroundBrush;
             }
         }

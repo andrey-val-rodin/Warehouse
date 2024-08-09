@@ -8,14 +8,17 @@ namespace Warehouse.Model
         [DisplayName("id")]
         public int Id { get; set; }
 
-        [DisplayName("Тип")]
-        public int Type { get; set; }
-
         [DisplayName("Наименование")]
         public string Name { get; set; }
 
+        [DisplayName("Тип")]
+        public int Type { get; set; }
+
         [DisplayName("Наличие")]
         public int Amount { get; set; }
+
+        [DisplayName("Остаток")]
+        public int Remainder { get; set; }
 
         [DisplayName("Цена")]
         public decimal? Price { get; set; }

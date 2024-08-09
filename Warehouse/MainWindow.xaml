@@ -52,6 +52,7 @@
                             <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
                             <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>
                         </DataGrid.Columns>
                     </DataGrid>
