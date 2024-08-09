@@ -9,7 +9,7 @@ namespace Warehouse.View
         {
             // Is a number?
             if (!int.TryParse((string)value, out int number))
-                return new ValidationResult(false, "Не число.");
+                return new ValidationResult(false, "Это не число.");
 
             // Is positive?
             if (number < 0)

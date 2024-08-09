@@ -2,7 +2,6 @@
 using System.Data;
 using System.Windows;
 using Warehouse.Database;
-using Warehouse.Model;
 
 namespace Warehouse.ViewModel
 {

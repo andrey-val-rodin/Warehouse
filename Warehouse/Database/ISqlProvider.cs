@@ -7,5 +7,8 @@ namespace Warehouse.Database
         bool Connect();
         string[] GetComponentTypes();
         DataView GetComponents(int type);
+        void UpdateComponentAmount(int componentId, int amount);
+        void UpdateComponentAmountInUse(int componentId, int amountInUse);
+        void UpdateComponentPrice(int componentId, decimal? price);
     }
 }

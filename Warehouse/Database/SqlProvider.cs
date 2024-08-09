@@ -62,5 +62,29 @@ namespace Warehouse.Database
 
             return ds.Tables[0].DefaultView;
         }
+
+        public void UpdateComponentAmount(int componentId, int amount)
+        {
+            using var command = new SQLiteCommand("UPDATE Component SET Amount = @value WHERE Id=@id", _connection);
+            command.Parameters.Add(new SQLiteParameter("@id", componentId));
+            command.Parameters.Add(new SQLiteParameter("@value", amount));
+            command.ExecuteNonQuery();
+        }
+
+        public void UpdateComponentAmountInUse(int componentId, int amountInUse)
+        {
+            using var command = new SQLiteCommand("UPDATE Component SET AmountInUse = @value WHERE Id=@id", _connection);
+            command.Parameters.Add(new SQLiteParameter("@id", componentId));
+            command.Parameters.Add(new SQLiteParameter("@value", amountInUse));
+            command.ExecuteNonQuery();
+        }
+
+        public void UpdateComponentPrice(int componentId, decimal? price)
+        {
+            using var command = new SQLiteCommand("UPDATE Component SET Price = @value WHERE Id=@id", _connection);
+            command.Parameters.Add(new SQLiteParameter("@id", componentId));
+            command.Parameters.Add(new SQLiteParameter("@value", price));
+            command.ExecuteNonQuery();
+        }
     }
 }

@@ -35,7 +35,7 @@
                 <DockPanel Margin="4,8,4,2"
                            LastChildFill="True">
                     <ComboBox DockPanel.Dock="Top"
-                        SelectedIndex="{Binding CurrentType}"
+                              SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
                               Width="170"
                               HorizontalAlignment="Left">
@@ -43,13 +43,19 @@
                     <DataGrid x:Name="ComponentsDataGrid"
                               ItemsSource="{Binding Path=Components, Mode=OneWay}"
                               IsReadOnly="True"
+                              IsSynchronizedWithCurrentItem="True"
                               SelectedItem="{Binding CurrentComponent}"
                               SelectionMode="Single"
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
-                              LoadingRow="DataGrid_LoadingRow"
-                              MouseDoubleClick="ComponentsDataGrid_MouseDoubleClick">
+                              LoadingRow="DataGrid_LoadingRow">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <EventSetter Event="MouseDoubleClick" 
+                                             Handler="ComponentsDataGrid_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
