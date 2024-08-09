@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 using Warehouse.Model;
+using Warehouse.View;
 using Warehouse.ViewModel;
 
 namespace Warehouse
@@ -27,6 +28,27 @@ namespace Warehouse
                 var component = Component.FromDataRow(row.Row);
                 if (component.Remainder < 1)
                     e.Row.Background = _backgroundBrush;
+            }
+        }
+
+        private void ComponentsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ComponentsDataGrid.SelectedItem is not DataRowView row)
+                return;
+
+            // Instantiate the dialog box
+            var dlg = new UpdateComponentDialog();
+
+            // Configure the dialog box
+            var c = Component.FromDataRow(row.Row);
+            dlg.Owner = this;
+            dlg.Title = c.Name;
+            dlg.Component = c;
+
+            // Open the dialog box modally
+            if (dlg.ShowDialog() is true)
+            {
+
             }
         }
     }

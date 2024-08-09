@@ -44,10 +44,12 @@
                               ItemsSource="{Binding Path=Components, Mode=OneWay}"
                               IsReadOnly="True"
                               SelectedItem="{Binding CurrentComponent}"
+                              SelectionMode="Single"
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
-                              LoadingRow="DataGrid_LoadingRow">
+                              LoadingRow="DataGrid_LoadingRow"
+                              MouseDoubleClick="ComponentsDataGrid_MouseDoubleClick">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
