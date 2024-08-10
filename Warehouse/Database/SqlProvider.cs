@@ -40,14 +40,10 @@ namespace Warehouse.Database
 
             using var reader = command.ExecuteReader();
             var result = new List<string>();
-
-            if (reader.HasRows)
+            while (reader.Read())
             {
-                while (reader.Read())
-                {
-                    if (reader.GetValue(0) is string name)
-                        result.Add(name);
-                }
+                if (reader.GetValue(0) is string name)
+                    result.Add(name);
             }
 
             return [.. result];
@@ -117,6 +113,23 @@ namespace Warehouse.Database
             command.ExecuteNonQuery();
         }
 
+        public string[] GetProductNames()
+        {
+            var query = "SELECT Name FROM Product ORDER BY Id ASC";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+
+            using var reader = command.ExecuteReader();
+            var result = new List<string>();
+            while (reader.Read())
+            {
+                if (reader.GetValue(0) is string name)
+                    result.Add(name);
+            }
+
+            return [.. result];
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -135,6 +148,23 @@ namespace Warehouse.Database
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public DataView GetProductComponents(int type)
+        {
+            var ds = new DataSet("ProductComponents");
+            string query = @"
+SELECT Component.Id, Component.Name, ProductComponent.Amount AS Required, Component.Amount, Component.Amount - Component.AmountInUse AS Remainder, CAST(Component.Price AS REAL)/100 AS Price
+FROM Component
+LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @p";
+                System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@p", type));
+            System.Diagnostics.Debug.WriteLine($"@p={type}");
+            using var adapter = new SQLiteDataAdapter(command);
+            adapter.Fill(ds);
+
+            return ds.Tables[0].DefaultView;
         }
     }
 }

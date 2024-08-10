@@ -49,7 +49,7 @@
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
-                              LoadingRow="DataGrid_LoadingRow">
+                              LoadingRow="ComponentsDataGrid_LoadingRow">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
                                 <EventSetter Event="MouseDoubleClick" 
@@ -59,6 +59,47 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem.Content>
+        </TabItem>
+        <TabItem DataContext="{Binding ProductComponentViewModel}">
+            <TabItem.Header>
+                <Label FontSize="14" FontWeight="Bold">Изделия</Label>
+            </TabItem.Header>
+            <TabItem.Content>
+                <DockPanel Margin="4,8,4,2"
+                           LastChildFill="True">
+                    <ComboBox DockPanel.Dock="Top"
+                              SelectedIndex="{Binding CurrentProductIndex}"
+                              ItemsSource="{Binding ProductNames}"
+                              Width="190"
+                              HorizontalAlignment="Left">
+                    </ComboBox>
+                    <DataGrid x:Name="ProductComponentsDataGrid"
+                              ItemsSource="{Binding Path=ProductComponents, Mode=OneWay}"
+                              IsReadOnly="True"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedItem="{Binding CurrentProductComponent}"
+                              SelectionMode="Single"
+                              GridLinesVisibility="Vertical"
+                              AutoGenerateColumns="False"
+                              Margin="0,6,0,0"
+                              LoadingRow="ProductComponentsDataGrid_LoadingRow">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <EventSetter Event="MouseDoubleClick"
+                                             Handler="ProductComponentsDataGridCell_MouseDoubleClick"/>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="id" Binding="{Binding Id}"/>
+                            <DataGridTextColumn Header="Наименование" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Требуется" Binding="{Binding Required}"/>
                             <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
                             <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price}"/>

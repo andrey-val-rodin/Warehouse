@@ -29,7 +29,7 @@ namespace Warehouse
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
         private MainViewModel Model => DataContext as MainViewModel;
 
-        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        private void ComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             var row = e.Row.DataContext as DataRowView;
             if (row != null && sender == ComponentsDataGrid)
@@ -73,6 +73,56 @@ namespace Warehouse
                 if (hasChanges)
                 {
                     Model?.ComponentViewModel?.Refresh();
+                }
+            }
+        }
+
+        private void ProductComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            var row = e.Row.DataContext as DataRowView;
+            if (row != null && sender == ProductComponentsDataGrid)
+            {
+                var productComponent = ProductComponent.FromDataRow(row.Row);
+                e.Row.Background = productComponent.Remainder < productComponent.Required
+                    ? _yellowBrush
+                    : _whiteBrush;
+            }
+        }
+
+        private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ProductComponentsDataGrid.SelectedItem is not DataRowView row)
+                return;
+
+            // Instantiate the dialog box
+            var dlg = new UpdateComponentDialog();
+
+            // Configure the dialog box
+            var c = ProductComponent.FromDataRow(row.Row);
+            var originalAmount = c.Amount;
+            var originalPrice = c.Price;
+            dlg.Owner = this;
+            dlg.Title = c.Name;
+            dlg.Component = c;
+
+            // Open the dialog box modally
+            if (dlg.ShowDialog() is true)
+            {
+                bool hasChanges = false;
+                if (dlg.Component.Amount != originalAmount)
+                {
+                    hasChanges = true;
+                    SqlProvider.UpdateComponentAmount(dlg.Component.Id, dlg.Component.Amount);
+                }
+                if (dlg.Component.Price != originalPrice)
+                {
+                    hasChanges = true;
+                    SqlProvider.UpdateComponentPrice(dlg.Component.Id, dlg.Component.Price * 100);
+                }
+
+                if (hasChanges)
+                {
+                    Model?.ProductComponentViewModel?.Refresh();
                 }
             }
         }

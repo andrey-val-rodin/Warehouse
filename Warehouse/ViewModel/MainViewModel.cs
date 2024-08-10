@@ -8,7 +8,11 @@ namespace Warehouse.ViewModel
 
         public MainViewModel()
         {
-            _children = [new OrdersViewModel(), new ProductsViewModel(), new ComponentsViewModel()];
+            _children = [
+                new OrdersViewModel(),
+                new ProductsViewModel(),
+                new ComponentsViewModel(),
+                new ProductComponentsViewModel()];
         }
 
         public ObservableCollection<NotifyPropertyChangedImpl> Children => _children;
@@ -16,5 +20,6 @@ namespace Warehouse.ViewModel
         public OrdersViewModel OrderViewModel { get => (OrdersViewModel)_children[0]; }
         public ProductsViewModel ProductViewModel { get => (ProductsViewModel)_children[1]; }
         public ComponentsViewModel ComponentViewModel { get => (ComponentsViewModel)_children[2]; }
+        public ProductComponentsViewModel ProductComponentViewModel { get => (ProductComponentsViewModel)_children[3]; }
     }
 }

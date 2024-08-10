@@ -10,5 +10,7 @@ namespace Warehouse.Database
         void UpdateComponentAmount(int componentId, int amount);
         void UpdateComponentAmountInUse(int componentId, int amountInUse);
         void UpdateComponentPrice(int componentId, decimal? price);
+        string[] GetProductNames();
+        DataView GetProductComponents(int type);
     }
 }
