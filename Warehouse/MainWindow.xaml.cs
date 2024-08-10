@@ -15,7 +15,8 @@ namespace Warehouse
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly SolidColorBrush _backgroundBrush = new(Colors.LightYellow);
+        private static readonly SolidColorBrush _yellowBrush = new(Colors.LightYellow);
+        private static readonly SolidColorBrush _whiteBrush = new(Colors.White);
 
         public MainWindow()
         {
@@ -26,15 +27,15 @@ namespace Warehouse
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
+        private MainViewModel Model => DataContext as MainViewModel;
 
-        private void DataGrid_LoadingRow(object sender, System.Windows.Controls.DataGridRowEventArgs e)
+        private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             var row = e.Row.DataContext as DataRowView;
             if (row != null && sender == ComponentsDataGrid)
             {
                 var component = Component.FromDataRow(row.Row);
-                if (component.Remainder < 1)
-                    e.Row.Background = _backgroundBrush;
+                e.Row.Background = component.Remainder < 1 ? _yellowBrush : _whiteBrush;
             }
         }
 
@@ -71,9 +72,7 @@ namespace Warehouse
 
                 if (hasChanges)
                 {
-                    // Refresh DataGrid
-                    ComponentsDataGrid.ItemsSource = null;
-                    ComponentsDataGrid.ItemsSource = ((MainViewModel)DataContext).ComponentViewModel.Components;
+                    Model?.ComponentViewModel?.Refresh();
                 }
             }
         }

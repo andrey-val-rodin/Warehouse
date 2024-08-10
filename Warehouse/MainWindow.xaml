@@ -37,7 +37,7 @@
                     <ComboBox DockPanel.Dock="Top"
                               SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
-                              Width="170"
+                              Width="190"
                               HorizontalAlignment="Left">
                     </ComboBox>
                     <DataGrid x:Name="ComponentsDataGrid"

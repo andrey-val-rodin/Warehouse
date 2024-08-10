@@ -42,5 +42,10 @@ namespace Warehouse.ViewModel
                 return result.Prepend("Все").ToArray();
             }
         }
+
+        public void Refresh()
+        {
+            RaisePropertyChanged(nameof(Components));
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Text;
 using System.Windows;
 
@@ -8,10 +9,17 @@ namespace Warehouse.Database
     public class SqlProvider : ISqlProvider
     {
         //TODO: temporary path
-        private readonly SQLiteConnection _connection = new SQLiteConnection("DataSource=C:\\Users\\andre\\OneDrive\\Desktop\\Components.db;Mode=ReadWrite");
+        private  const string _path = "C:\\Users\\andre\\OneDrive\\Desktop\\Components.db";
+        private readonly SQLiteConnection _connection = new SQLiteConnection($"DataSource={_path};Mode=ReadWrite");
 
         public bool Connect()
         {
+            if (!File.Exists(_path))
+            {
+                MessageBox.Show($"Файл не найден\n{_path}", "Ошибка открытия БД");
+                return false;
+            }
+
             try
             {
                 _connection.Open();
@@ -27,7 +35,10 @@ namespace Warehouse.Database
 
         public string[] GetComponentTypes()
         {
-            using var command = new SQLiteCommand("SELECT Name FROM ComponentType ORDER BY Id ASC", _connection);
+            var query = "SELECT Name FROM ComponentType ORDER BY Id ASC";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+
             using var reader = command.ExecuteReader();
             var result = new List<string>();
 
@@ -47,15 +58,23 @@ namespace Warehouse.Database
         {
             var ds = new DataSet("Components");
             SQLiteCommand command;
-            var text = new StringBuilder("SELECT Component.Id, Component.Type, Component.Name, Component.Amount, Component.Amount - Component.AmountInUse AS Remainder, CAST(Component.Price AS REAL)/100 AS Price FROM Component");
+            var builder = new StringBuilder("SELECT Component.Id, Component.Type, Component.Name, Component.Amount, Component.Amount - Component.AmountInUse AS Remainder, CAST(Component.Price AS REAL)/100 AS Price FROM Component");
+            string query;
             if (type > 0)
             {
-                text.Append(" LEFT JOIN ComponentType ON Type = ComponentType.Id WHERE Component.Type = @t");
-                command = new SQLiteCommand(text.ToString(), _connection);
+                builder.Append(" LEFT JOIN ComponentType ON Type = ComponentType.Id WHERE Component.Type = @t");
+                query = builder.ToString();
+                command = new SQLiteCommand(query, _connection);
+                System.Diagnostics.Debug.WriteLine(query);
                 command.Parameters.Add(new SQLiteParameter("@t", type));
+                System.Diagnostics.Debug.WriteLine($"@t={type}");
             }
             else
-                command = new SQLiteCommand(text.ToString(), _connection);
+            {
+                query = builder.ToString();
+                System.Diagnostics.Debug.WriteLine(query);
+                command = new SQLiteCommand(query, _connection);
+            }
 
             using var adapter = new SQLiteDataAdapter(command);
             adapter.Fill(ds);
@@ -65,25 +84,37 @@ namespace Warehouse.Database
 
         public void UpdateComponentAmount(int componentId, int amount)
         {
-            using var command = new SQLiteCommand("UPDATE Component SET Amount = @value WHERE Id=@id", _connection);
+            var query = "UPDATE Component SET Amount = @value WHERE Id=@id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
             command.Parameters.Add(new SQLiteParameter("@id", componentId));
             command.Parameters.Add(new SQLiteParameter("@value", amount));
+            System.Diagnostics.Debug.WriteLine($"@id={componentId}");
+            System.Diagnostics.Debug.WriteLine($"@value={amount}");
             command.ExecuteNonQuery();
         }
 
         public void UpdateComponentAmountInUse(int componentId, int amountInUse)
         {
-            using var command = new SQLiteCommand("UPDATE Component SET AmountInUse = @value WHERE Id=@id", _connection);
+            var query = "UPDATE Component SET AmountInUse = @value WHERE Id=@id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
             command.Parameters.Add(new SQLiteParameter("@id", componentId));
             command.Parameters.Add(new SQLiteParameter("@value", amountInUse));
+            System.Diagnostics.Debug.WriteLine($"@id={componentId}");
+            System.Diagnostics.Debug.WriteLine($"@value={amountInUse}");
             command.ExecuteNonQuery();
         }
 
         public void UpdateComponentPrice(int componentId, decimal? price)
         {
-            using var command = new SQLiteCommand("UPDATE Component SET Price = @value WHERE Id=@id", _connection);
+            var query = "UPDATE Component SET Price = @value WHERE Id=@id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
             command.Parameters.Add(new SQLiteParameter("@id", componentId));
             command.Parameters.Add(new SQLiteParameter("@value", price));
+            System.Diagnostics.Debug.WriteLine($"@id={componentId}");
+            System.Diagnostics.Debug.WriteLine($"@value={price}");
             command.ExecuteNonQuery();
         }
     }
