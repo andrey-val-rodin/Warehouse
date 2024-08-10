@@ -4,7 +4,7 @@ namespace Warehouse.Database
 {
     public interface ISqlProvider
     {
-        bool Connect();
+        bool Connect(string path);
         string[] GetComponentTypes();
         DataView GetComponents(int type);
         void UpdateComponentAmount(int componentId, int amount);

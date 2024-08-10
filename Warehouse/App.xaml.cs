@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 using System.Windows;
 using Warehouse.Database;
 
@@ -33,8 +34,17 @@ namespace Warehouse
         {
             base.OnStartup(e);
 
+            //TODO: temporary path
+            const string path = "C:\\Users\\andre\\OneDrive\\Desktop\\Components.db";
+            if (!File.Exists(path))
+            {
+                MessageBox.Show($"Файл не найден\n{path}", "Ошибка открытия БД");
+                Current.Shutdown();
+                return;
+            }
+
             var sqlProvider = ServiceProvider.GetService<ISqlProvider>();
-            if (!sqlProvider.Connect())
+            if (!sqlProvider.Connect(path))
                 Current.Shutdown();
         }
     }

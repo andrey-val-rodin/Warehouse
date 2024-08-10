@@ -1,7 +1,6 @@
 ﻿using System.Data.SQLite;
-using System.IO;
 
-namespace Warehouse.Database
+namespace Tests
 {
     public class DatabaseCreator
     {

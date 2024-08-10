@@ -6,22 +6,16 @@ using System.Windows;
 
 namespace Warehouse.Database
 {
-    public class SqlProvider : ISqlProvider
+    public class SqlProvider : ISqlProvider, IDisposable
     {
-        //TODO: temporary path
-        private  const string _path = "C:\\Users\\andre\\OneDrive\\Desktop\\Components.db";
-        private readonly SQLiteConnection _connection = new SQLiteConnection($"DataSource={_path};Mode=ReadWrite");
+        private SQLiteConnection _connection;
+        private bool disposedValue;
 
-        public bool Connect()
+        public bool Connect(string path)
         {
-            if (!File.Exists(_path))
-            {
-                MessageBox.Show($"Файл не найден\n{_path}", "Ошибка открытия БД");
-                return false;
-            }
-
             try
             {
+                _connection = new SQLiteConnection($"DataSource={path};Mode=ReadWrite");
                 _connection.Open();
             }
             catch (SQLiteException e)
@@ -31,6 +25,11 @@ namespace Warehouse.Database
             }
 
             return true;
+        }
+
+        public void Close()
+        {
+            _connection?.Close(); 
         }
 
         public string[] GetComponentTypes()
@@ -116,6 +115,26 @@ namespace Warehouse.Database
             System.Diagnostics.Debug.WriteLine($"@id={componentId}");
             System.Diagnostics.Debug.WriteLine($"@value={price}");
             command.ExecuteNonQuery();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _connection?.Dispose();
+                }
+
+                _connection = null;
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
