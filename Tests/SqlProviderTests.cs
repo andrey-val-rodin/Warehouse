@@ -222,6 +222,86 @@ namespace Tests
                 ]);
         }
 
+        [Fact]
+        public void GetProductComponents_ById7_CorrectIds()
+        {
+            var result = GetColumn(0, SqlProvider.GetProductComponents(7));
+
+            result.Should().Equal([
+                2, 7, 11, 12, 13, 14, 15, 16, 17, 24, 27, 31, 32, 33, 35, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 68, 73, 74, 75, 76, 77, 79, 80, 81, 82, 83, 84, 85, 86, 90, 91, 93, 95, 98, 99, 100, 102, 103, 105, 108, 109, 110, 111, 113, 114, 115, 116, 117, 118, 119, 120, 121, 123, 124, 125, 126, 127, 130, 131, 132, 133, 134, 135, 136, 137, 142, 143, 144, 148, 149, 150, 151
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById7_CorrectRequired()
+        {
+            var result = GetColumn(2, SqlProvider.GetProductComponents(7));
+
+            result.Should().Equal([
+                1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 140, 60, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 4, 1, 3, 2, 4, 2, 2, 1, 1, 1, 2, 4, 2, 2, 1, 2, 6, 4, 19, 4, 3, 6, 14, 8, 6, 13, 2, 1, 10, 6, 1, 2, 1, 1, 4, 20, 6, 8, 6, 20, 1, 4, 6, 4, 6, 21, 1, 2, 1, 4, 5, 18, 1, 1, 1, 1, 1
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById8_CorrectIds()
+        {
+            var result = GetColumn(0, SqlProvider.GetProductComponents(8));
+
+            result.Should().Equal([
+                2, 7, 11, 12, 13, 14, 15, 16, 17, 25, 27, 31, 32, 33, 35, 36, 39, 40, 41, 42, 50, 68, 73, 74, 75, 76, 77, 79, 80, 81, 82, 83, 84, 85, 86, 90, 91, 93, 95, 98, 99, 100, 102, 103, 105, 108, 109, 110, 111, 113, 114, 115, 116, 117, 118, 119, 120, 121, 123, 124, 125, 126, 127, 130, 131, 132, 133, 134, 135, 136, 137, 142, 143, 144, 148, 149, 150, 151
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById8_CorrectRequired()
+        {
+            var result = GetColumn(2, SqlProvider.GetProductComponents(8));
+
+            result.Should().Equal([
+                1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 140, 60, 1, 1, 1, 1, 1, 4, 1, 3, 2, 4, 2, 2, 1, 1, 1, 2, 4, 2, 2, 1, 2, 6, 4, 19, 4, 3, 6, 14, 8, 6, 13, 2, 1, 10, 6, 1, 2, 1, 1, 4, 20, 6, 8, 6, 20, 1, 4, 6, 4, 6, 21, 1, 2, 1, 4, 5, 18, 1, 1, 1, 1, 1
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById9_CorrectIds()
+        {
+            var result = GetColumn(0, SqlProvider.GetProductComponents(9));
+
+            result.Should().Equal([
+                3, 8, 17, 18, 22, 26, 28, 30, 31, 32, 35, 37, 38, 39, 40, 41, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 93, 95, 96, 98, 100, 101, 102, 103, 104, 106, 107, 108, 109, 110, 111, 113, 115, 116, 117, 119, 120, 121, 122, 125, 126, 128, 129, 130, 133, 134, 136, 137, 141, 142, 143, 144, 145, 148, 149, 150, 151
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById9_CorrectRequired()
+        {
+            var result = GetColumn(2, SqlProvider.GetProductComponents(9));
+
+            result.Should().Equal([
+                1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 280, 40, 60, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 4, 2, 4, 4, 2, 2, 1, 4, 4, 4, 2, 4, 2, 2, 2, 2, 4, 2, 2, 1, 1, 1, 2, 8, 4, 8, 24, 6, 6, 12, 17, 8, 4, 4, 16, 29, 4, 2, 12, 2, 2, 2, 4, 29, 12, 4, 43, 2, 2, 8, 8, 44, 2, 2, 6, 1, 10, 40, 4, 30, 1, 1, 1, 1
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById10_CorrectIds()
+        {
+            var result = GetColumn(0, SqlProvider.GetProductComponents(10));
+
+            result.Should().Equal([
+                3, 8, 17, 18, 23, 26, 28, 30, 31, 32, 35, 37, 38, 39, 40, 41, 53, 54, 55, 56, 57, 59, 60, 64, 65, 66, 67, 68, 70, 71, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 90, 93, 95, 96, 98, 100, 101, 102, 103, 104, 108, 109, 110, 111, 113, 115, 116, 117, 120, 121, 125, 126, 128, 129, 130, 133, 134, 136, 137, 142, 143, 144, 145, 148, 149, 150, 151
+                ]);
+        }
+
+        [Fact]
+        public void GetProductComponents_ById10_CorrectRequired()
+        {
+            var result = GetColumn(2, SqlProvider.GetProductComponents(10));
+
+            result.Should().Equal([
+                1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 280, 40, 60, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 2, 4, 4, 2, 1, 4, 4, 4, 2, 4, 2, 2, 2, 2, 4, 2, 2, 2, 8, 4, 8, 24, 6, 6, 12, 17, 8, 16, 29, 4, 2, 12, 2, 2, 2, 29, 12, 43, 2, 2, 8, 8, 44, 2, 2, 6, 10, 40, 4, 30, 1, 1, 1, 1
+                ]);
+        }
+
         #region Helpers
         private static IEnumerable<object> GetColumn(int index, DataView dataView)
         {
