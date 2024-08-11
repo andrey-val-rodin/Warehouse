@@ -60,5 +60,23 @@ namespace Warehouse.View
 
             // All dependency objects are valid
         }
+
+        private void ConfirmReceiving_Click(object sender, RoutedEventArgs e)
+        {
+            if (Component.Ordered == null)
+                return;
+
+            var component = (Component)Component.Clone();
+            component.Amount += Component.Ordered.Value;
+            component.Ordered = null;
+            Component = component;
+        }
+
+        private void CancelOrder_Click(object sender, RoutedEventArgs e)
+        {
+            var component = (Component)Component.Clone();
+            component.Ordered = null;
+            Component = component;
+        }
     }
 }

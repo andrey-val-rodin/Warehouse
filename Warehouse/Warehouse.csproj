@@ -10,7 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="View\images\cancel.png" />
+    <None Remove="View\images\ok.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="View\images\cancel.png" />
+    <Resource Include="View\images\ok.png" />
   </ItemGroup>
 
   <ItemGroup>

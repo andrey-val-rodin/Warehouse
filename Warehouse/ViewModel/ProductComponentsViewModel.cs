@@ -5,7 +5,7 @@ using Warehouse.Database;
 
 namespace Warehouse.ViewModel
 {
-    public class ProductComponentsViewModel : NotifyPropertyChangedImpl
+    public class ProductComponentsViewModel : TabViewModel
     {
         private int _currentProductIndex;
         private DataRowView _currentProductComponent;
@@ -36,7 +36,7 @@ namespace Warehouse.ViewModel
 
         public string[] ProductNames => SqlProvider.GetProductNames();
 
-        public void Refresh()
+        public override void Refresh()
         {
             RaisePropertyChanged(nameof(ProductComponents));
         }

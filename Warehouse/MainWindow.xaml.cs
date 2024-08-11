@@ -41,40 +41,7 @@ namespace Warehouse
 
         private void ComponentsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (ComponentsDataGrid.SelectedItem is not DataRowView row)
-                return;
-
-            // Instantiate the dialog box
-            var dlg = new UpdateComponentDialog();
-
-            // Configure the dialog box
-            var c = Component.FromDataRow(row.Row);
-            var originalAmount = c.Amount;
-            var originalPrice = c.Price;
-            dlg.Owner = this;
-            dlg.Title = c.Name;
-            dlg.Component = c;
-
-            // Open the dialog box modally
-            if (dlg.ShowDialog() is true)
-            {
-                bool hasChanges = false;
-                if (dlg.Component.Amount != originalAmount)
-                {
-                    hasChanges = true;
-                    SqlProvider.UpdateComponentAmount(dlg.Component.Id, dlg.Component.Amount);
-                }
-                if (dlg.Component.Price != originalPrice)
-                {
-                    hasChanges = true;
-                    SqlProvider.UpdateComponentPrice(dlg.Component.Id, dlg.Component.Price * 100);
-                }
-
-                if (hasChanges)
-                {
-                    Model?.ComponentViewModel?.Refresh();
-                }
-            }
+            ShowDialog(ComponentsDataGrid, Model?.ComponentViewModel);
         }
 
         private void ProductComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
@@ -91,16 +58,21 @@ namespace Warehouse
 
         private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (ProductComponentsDataGrid.SelectedItem is not DataRowView row)
+            ShowDialog(ProductComponentsDataGrid, Model?.ProductComponentViewModel);
+        }
+
+        private void ShowDialog(DataGrid source, TabViewModel model)
+        {
+            if (source.SelectedItem is not DataRowView row)
                 return;
 
             // Instantiate the dialog box
             var dlg = new UpdateComponentDialog();
 
             // Configure the dialog box
-            var c = ProductComponent.FromDataRow(row.Row);
-            var originalAmount = c.Amount;
-            var originalPrice = c.Price;
+            var c = Component.FromDataRow(row.Row);
+            var originalComponent = (Component)c.Clone();
+
             dlg.Owner = this;
             dlg.Title = c.Name;
             dlg.Component = c;
@@ -108,21 +80,17 @@ namespace Warehouse
             // Open the dialog box modally
             if (dlg.ShowDialog() is true)
             {
-                bool hasChanges = false;
-                if (dlg.Component.Amount != originalAmount)
-                {
-                    hasChanges = true;
-                    SqlProvider.UpdateComponentAmount(dlg.Component.Id, dlg.Component.Amount);
-                }
-                if (dlg.Component.Price != originalPrice)
-                {
-                    hasChanges = true;
-                    SqlProvider.UpdateComponentPrice(dlg.Component.Id, dlg.Component.Price * 100);
-                }
+                bool hasChanges =
+                    dlg.Component.Amount != originalComponent.Amount ||
+                    dlg.Component.Price != originalComponent.Price ||
+                    dlg.Component.Ordered != originalComponent.Ordered ||
+                    dlg.Component.Details != originalComponent.Details;
 
                 if (hasChanges)
                 {
-                    Model?.ProductComponentViewModel?.Refresh();
+                    SqlProvider.UpdateComponent(dlg.Component);
+                    model?.Refresh();
+                    source.SelectedItem = null;
                 }
             }
         }

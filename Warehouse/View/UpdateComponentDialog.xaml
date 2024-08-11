@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:Warehouse.View"
         mc:Ignorable="d"
         Title="Обновить позицию"
-        Height="158"
-        Width="300"
+        Height="318"
+        Width="400"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <Grid>
-
         <Grid.Resources>
             <Style TargetType="{x:Type Grid}">
                 <Setter Property="Margin" Value="10,16,10,10" />
@@ -25,7 +24,8 @@
                 <Setter Property="Margin" Value="0,0,0,5" />
                 <Style.Triggers>
                     <Trigger Property="Validation.HasError" Value="true">
-                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        <Setter Property="ToolTip" 
+                                Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -39,10 +39,12 @@
                 <Setter Property="Height" Value="25" />
                 <Setter Property="Margin" Value="5,0,0,0" />
             </Style>
+            <ImageBrush x:Key="okImage" ImageSource="images\ok.png"/>
+            <ImageBrush x:Key="cancelImage" ImageSource="images\cancel.png"/>
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="140" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
@@ -50,10 +52,13 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <!-- Amount -->
-        <Label Grid.Column="0" Grid.Row="0">Новое количество:</Label>
+        <Label Grid.Column="0" Grid.Row="0">Наличие:</Label>
         <TextBox Name="newAmount" Grid.Column="1" Grid.Row="0"
                  VerticalContentAlignment="Center">
             <TextBox.Text>
@@ -66,8 +71,8 @@
         </TextBox>
 
         <!-- Price -->
-        <Label Grid.Column="0" Grid.Row="1">Новая цена:</Label>
-        <TextBox Name="rightMarginTextBox" Grid.Column="1" Grid.Row="1"
+        <Label Grid.Column="0" Grid.Row="1">Цена:</Label>
+        <TextBox Grid.Column="1" Grid.Row="1"
                  VerticalContentAlignment="Center">
             <TextBox.Text>
                 <Binding Path="Price" UpdateSourceTrigger="PropertyChanged">
@@ -81,8 +86,64 @@
             </TextBox.Text>
         </TextBox>
 
+        <!-- Ordered -->
+        <Label Grid.Column="0" Grid.Row="2">Заказано:</Label>
+        <ToolBarPanel Grid.Column="1" Grid.Row="2"
+                      Orientation="Horizontal">
+            <TextBox VerticalContentAlignment="Center"
+                     Width="170">
+                <TextBox.Text>
+                    <Binding Path="Ordered" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.Converter>
+                            <local:NullableValueConverter/>
+                        </Binding.Converter>
+                        <Binding.ValidationRules>
+                            <local:OrderedValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Button ToolTip="Подтвердить получение"
+                    Width="24"
+                    Height="24"
+                    Margin="4, 0, 0, 0"
+                    VerticalAlignment="Top"
+                    IsEnabled="{Binding Path=Ordered, TargetNullValue='False'}"
+                    Click="ConfirmReceiving_Click">
+                <Image Source="images\ok.png"
+                       Width="16"
+                       Height="16"/>
+            </Button>
+            <Button ToolTip="Отменить заказ"
+                    Width="24"
+                    Height="24"
+                    Margin="2, 0, 0, 0"
+                    VerticalAlignment="Top"
+                    IsEnabled="{Binding Path=Ordered, TargetNullValue='False'}"
+                    Click="CancelOrder_Click">
+                <Image Source="images\cancel.png"
+                       Width="16"
+                       Height="16"/>
+            </Button>
+        </ToolBarPanel>
+
+        <!-- Details -->
+        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"
+               Margin="0,10,0,0">Заметки</Label>
+        <TextBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4"
+                 Height="100"
+                 MaxLength="1024"
+                 Margin="0,-2,0,0"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True">
+            <TextBox.Text>
+                <Binding Path="Details" UpdateSourceTrigger="PropertyChanged"/>
+            </TextBox.Text>
+        </TextBox>
+
         <!-- Accept or Cancel -->
-        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2">
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5"
+                    Margin="0, 12">
             <Button Name="okButton" Click="okButton_Click" IsDefault="True">OK</Button>
             <Button Name="cancelButton" Click="cancelButton_Click" IsCancel="True">Cancel</Button>
         </StackPanel>

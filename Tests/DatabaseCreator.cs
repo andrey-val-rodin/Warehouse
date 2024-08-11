@@ -42,7 +42,9 @@ CREATE TABLE Component (
                         DEFAULT (0),
     AmountInUse INTEGER NOT NULL
                         DEFAULT (0),
-    Price       INTEGER
+    Price       INTEGER,
+    Ordered     INTEGER,
+    Details     TEXT
 )
 STRICT;
 
@@ -72,28 +74,8 @@ CREATE TABLE Fabrication (
     Status    INTEGER NOT NULL
                       DEFAULT (0),
     Started   TEXT    NOT NULL
-                      DEFAULT (DATETIME('now') ),
+                      DEFAULT (DATETIME('now', 'localtime') ),
     Closed    TEXT
-)
-STRICT;
-
-CREATE TABLE Booking (
-    Id          INTEGER PRIMARY KEY ASC AUTOINCREMENT
-                        NOT NULL,
-    ComponentId INTEGER REFERENCES Component (id) 
-                        NOT NULL,
-    Status      INTEGER NOT NULL
-                        DEFAULT (0),
-    Price       INTEGER NOT NULL
-                        DEFAULT (0),
-    Details     TEXT,
-    Amount      INTEGER NOT NULL
-                        DEFAULT (1),
-    Created     TEXT    NOT NULL
-                        DEFAULT (DATETIME('now', 'localtime') ),
-    Expected    TEXT    NOT NULL
-                        DEFAULT (DATETIME('now', 'localtime') ),
-    Closed      TEXT
 )
 STRICT;
 ";
@@ -112,7 +94,7 @@ VALUES
 (4, 'Заготовки'),
 (5, 'Покупные изделия электрика'),
 (6, 'Покупные изделия механика'),
-(7, 'Метизы'),
+(7, 'Заклепки'),
 (8, 'Болты'),
 (9, 'Шайбы'),
 (10, 'Гайки'),

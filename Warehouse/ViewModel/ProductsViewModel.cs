@@ -1,8 +1,8 @@
 ﻿namespace Warehouse.ViewModel
 {
-    public class ProductsViewModel : NotifyPropertyChangedImpl
+    public class ProductsViewModel : TabViewModel
     {
-        private int _sliderValue;
+        private int _sliderValue;//TODO remove
 
         public ProductsViewModel()
         {
@@ -16,6 +16,11 @@
             {
                 SetProperty(ref _sliderValue, value);
             }
+        }
+
+        public override void Refresh()
+        {
+            throw new NotImplementedException();
         }
     }
 }

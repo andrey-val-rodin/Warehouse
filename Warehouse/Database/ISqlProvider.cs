@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Warehouse.Model;
 
 namespace Warehouse.Database
 {
@@ -7,10 +8,9 @@ namespace Warehouse.Database
         bool Connect(string path);
         string[] GetComponentTypes();
         DataView GetComponents(int type);
-        void UpdateComponentAmount(int componentId, int amount);
-        void UpdateComponentAmountInUse(int componentId, int amountInUse);
-        void UpdateComponentPrice(int componentId, decimal? price);
+        void UpdateComponent(Component component);
         string[] GetProductNames();
         DataView GetProductComponents(int type);
+        decimal GetProductPrice(int type);
     }
 }

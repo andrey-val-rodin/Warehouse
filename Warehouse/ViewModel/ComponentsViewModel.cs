@@ -5,7 +5,7 @@ using Warehouse.Database;
 
 namespace Warehouse.ViewModel
 {
-    public class ComponentsViewModel : NotifyPropertyChangedImpl
+    public class ComponentsViewModel : TabViewModel
     {
         private int _currentType;
         private DataRowView _currentComponent;
@@ -43,7 +43,7 @@ namespace Warehouse.ViewModel
             }
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             RaisePropertyChanged(nameof(Components));
         }
