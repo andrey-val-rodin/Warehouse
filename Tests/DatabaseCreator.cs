@@ -33,18 +33,19 @@ CREATE TABLE ComponentType (
 STRICT;
 
 CREATE TABLE Component (
-    Id          INTEGER PRIMARY KEY AUTOINCREMENT
-                        NOT NULL,
-    Name        TEXT    NOT NULL,
-    Type        INTEGER NOT NULL
-                        REFERENCES ComponentType (id),
-    Amount      INTEGER NOT NULL
-                        DEFAULT (0),
-    AmountInUse INTEGER NOT NULL
-                        DEFAULT (0),
-    Price       INTEGER,
-    Ordered     INTEGER,
-    Details     TEXT
+    Id              INTEGER PRIMARY KEY AUTOINCREMENT
+                            NOT NULL,
+    Name            TEXT    NOT NULL,
+    Type            INTEGER NOT NULL
+                            REFERENCES ComponentType (id),
+    Amount          INTEGER NOT NULL
+                            DEFAULT (0),
+    AmountInUse     INTEGER NOT NULL
+                            DEFAULT (0),
+    Price           INTEGER,
+    Ordered         INTEGER,
+    ExpectedDate    TEXT,
+    Details         TEXT
 )
 STRICT;
 

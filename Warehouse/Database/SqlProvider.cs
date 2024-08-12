@@ -29,7 +29,7 @@ namespace Warehouse.Database
 
         public void Close()
         {
-            _connection?.Close(); 
+            _connection?.Close();
         }
 
         public string[] GetComponentTypes()
@@ -62,6 +62,7 @@ SELECT
     Component.Amount - Component.AmountInUse AS Remainder,
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
+    ExpectedDate,
     Details
 FROM Component");
             string query;
@@ -96,6 +97,7 @@ UPDATE Component SET
     Amount = @amount,
     Price = @price,
     Ordered = @ordered,
+    ExpectedDate = @expectedDate,
     Details = @details
 WHERE Id=@id";
             using var command = new SQLiteCommand(query, _connection);
@@ -104,6 +106,9 @@ WHERE Id=@id";
             command.Parameters.Add(new SQLiteParameter("@amount", component.Amount));
             command.Parameters.Add(new SQLiteParameter("@price", component.Price * 100));
             command.Parameters.Add(new SQLiteParameter("@ordered", component.Ordered));
+            command.Parameters.Add(new SQLiteParameter("@expectedDate", component.ExpectedDate == null
+                ? null
+                : component.ExpectedDate.Value.ToString("yyyy-MM-dd")));
             command.Parameters.Add(new SQLiteParameter("@details", component.Details));
 #if DEBUG
             WriteParameters(command);
@@ -140,6 +145,7 @@ SELECT
     Component.Amount - Component.AmountInUse AS Remainder,
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
+    ExpectedDate,
     Details
 FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @product";

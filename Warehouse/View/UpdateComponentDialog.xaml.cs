@@ -13,12 +13,21 @@ namespace Warehouse.View
         public UpdateComponentDialog()
         {
             InitializeComponent();
+            datePicker.DisplayDateStart = DateTime.Now;
+            datePicker.DisplayDateEnd = datePicker.DisplayDateStart + TimeSpan.FromDays(180);
         }
 
         public Component Component
         {
             get { return (Component)DataContext; }
-            set { DataContext = value; }
+            set
+            {
+                // Validate component
+                if (value.Ordered == null)
+                    value.ExpectedDate = null;
+
+                DataContext = value;
+            }
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)

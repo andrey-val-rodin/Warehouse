@@ -17,6 +17,8 @@ namespace Warehouse
     {
         private static readonly SolidColorBrush _yellowBrush = new(Colors.LightYellow);
         private static readonly SolidColorBrush _whiteBrush = new(Colors.White);
+        private static readonly SolidColorBrush _redBrush = new(Colors.Red);
+        private static readonly SolidColorBrush _blackBrush = new(Colors.Black);
 
         public MainWindow()
         {
@@ -35,7 +37,15 @@ namespace Warehouse
             if (row != null && sender == ComponentsDataGrid)
             {
                 var component = Component.FromDataRow(row.Row);
-                e.Row.Background = component.Remainder < 1 ? _yellowBrush : _whiteBrush;
+
+                bool lackOfComponents = component.Remainder < 1;
+                bool overdueDate = DateTime.Now > component.ExpectedDate;
+
+                // Check remainder
+                e.Row.Background = lackOfComponents || overdueDate ? _yellowBrush : _whiteBrush;
+
+                // Check expected date
+                e.Row.Foreground = overdueDate ? _redBrush : _blackBrush;
             }
         }
 
@@ -50,9 +60,16 @@ namespace Warehouse
             if (row != null && sender == ProductComponentsDataGrid)
             {
                 var productComponent = ProductComponent.FromDataRow(row.Row);
-                e.Row.Background = productComponent.Remainder < productComponent.Required
-                    ? _yellowBrush
-                    : _whiteBrush;
+
+                bool lackOfComponents = productComponent.Remainder < 1;
+                bool overdueDate = DateTime.Now > productComponent.ExpectedDate;
+
+
+                // Check remainder
+                e.Row.Background = lackOfComponents || overdueDate ? _yellowBrush : _whiteBrush;
+
+                // Check expected date
+                e.Row.Foreground = overdueDate ? _redBrush : _blackBrush;
             }
         }
 
@@ -84,6 +101,7 @@ namespace Warehouse
                     dlg.Component.Amount != originalComponent.Amount ||
                     dlg.Component.Price != originalComponent.Price ||
                     dlg.Component.Ordered != originalComponent.Ordered ||
+                    dlg.Component.ExpectedDate != originalComponent.ExpectedDate ||
                     dlg.Component.Details != originalComponent.Details;
 
                 if (hasChanges)

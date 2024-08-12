@@ -32,6 +32,9 @@ namespace Warehouse.Model
         [Range(0, int.MaxValue)]
         public int? Ordered { get; set; }
 
+        [DisplayName("Дата поставки")]
+        public DateTime? ExpectedDate { get; set; }
+
         [DisplayName("Заметки")]
         [MinLength(1), MaxLength(1024)]
         public string Details { get; set; }

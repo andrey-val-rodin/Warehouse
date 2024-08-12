@@ -7,7 +7,7 @@
         xmlns:viewmodels="clr-namespace:Warehouse.ViewModel"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="Склад" Height="450" Width="800">
+        Title="Склад" Height="700" Width="1000">
     <TabControl>
         <TabControl.Resources>
             <Style x:Key="dataGridStyle" TargetType="{x:Type DataGrid}">
@@ -72,6 +72,7 @@
                             <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
+                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -128,6 +129,7 @@
                             <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
+                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
