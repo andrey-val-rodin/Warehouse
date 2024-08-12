@@ -73,7 +73,21 @@
         <!-- Price -->
         <Label Grid.Column="0" Grid.Row="1">Цена:</Label>
         <TextBox Grid.Column="1" Grid.Row="1"
+                 Margin="0,-4,0,0"
+                 Height="24"
                  VerticalContentAlignment="Center">
+            <TextBox.Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="Text" Value="{Binding Path=Price, StringFormat=\{0:0.00\}}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Text" Value="{Binding Path=Price, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Setter Property="ToolTip"
+                                    Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
             <TextBox.Text>
                 <Binding Path="Price" UpdateSourceTrigger="PropertyChanged">
                     <Binding.Converter>

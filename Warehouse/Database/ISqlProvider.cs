@@ -7,10 +7,10 @@ namespace Warehouse.Database
     {
         bool Connect(string path);
         string[] GetComponentTypes();
-        DataView GetComponents(int type);
+        DataView GetComponents(int typeId);
         void UpdateComponent(Component component);
         string[] GetProductNames();
-        DataView GetProductComponents(int type);
-        decimal GetProductPrice(int type);
+        DataView GetProductComponents(int productId);
+        decimal GetProductPrice(int productId);
     }
 }

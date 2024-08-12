@@ -10,16 +10,25 @@
         Title="Склад" Height="450" Width="800">
     <TabControl>
         <TabControl.Resources>
+            <Style x:Key="dataGridStyle" TargetType="{x:Type DataGrid}">
+                <Setter Property="ColumnHeaderStyle" Value="{DynamicResource columnHeaderStyle}"/>
+            </Style>
+            <!-- DataGridColumnHeader style -->
+            <Style x:Key="columnHeaderStyle" TargetType="DataGridColumnHeader">
+                <Setter Property="FontWeight" Value="Bold"/>
+            </Style>
             <Style TargetType="TextBlock" x:Key="leftAlign">
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
         </TabControl.Resources>
+        
         <TabItem DataContext="{Binding ProductViewModel}">
             <TabItem.Header>
                 <Label FontSize="14" FontWeight="Bold">Производство</Label>
             </TabItem.Header>
             <Slider Minimum="0" Maximum="100" Value="{Binding SliderValue}"></Slider>
         </TabItem>
+        
         <TabItem DataContext="{Binding ComponentViewModel}">
             <TabItem.Header>
                 <Label FontSize="14" FontWeight="Bold">Комплектующие</Label>
@@ -30,10 +39,14 @@
                     <ComboBox DockPanel.Dock="Top"
                               SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
+                              Margin="0,2,0,0"
                               Width="190"
+                              MaxDropDownHeight="Auto"
+                              FontWeight="Bold"
                               HorizontalAlignment="Left">
                     </ComboBox>
                     <DataGrid x:Name="ComponentsDataGrid"
+                              Style="{DynamicResource dataGridStyle}"
                               ItemsSource="{Binding Path=Components, Mode=OneWay}"
                               IsReadOnly="True"
                               IsSynchronizedWithCurrentItem="True"
@@ -57,13 +70,14 @@
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
                             <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
-                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:#.00\}}"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
             </TabItem.Content>
         </TabItem>
+        
         <TabItem DataContext="{Binding ProductComponentViewModel}">
             <TabItem.Header>
                 <Label FontSize="14" FontWeight="Bold">Изделия</Label>
@@ -71,13 +85,23 @@
             <TabItem.Content>
                 <DockPanel Margin="4,8,4,2"
                            LastChildFill="True">
-                    <ComboBox DockPanel.Dock="Top"
-                              SelectedIndex="{Binding CurrentProductIndex}"
-                              ItemsSource="{Binding ProductNames}"
-                              Width="190"
-                              HorizontalAlignment="Left">
-                    </ComboBox>
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,-2">
+                        <ComboBox DockPanel.Dock="Top"
+                                  SelectedIndex="{Binding CurrentProductIndex}"
+                                  ItemsSource="{Binding ProductNames}"
+                                  Width="190"
+                                  Height="22"
+                                  MaxDropDownHeight="Auto"
+                                  FontWeight="Bold"
+                                  HorizontalAlignment="Left">
+                        </ComboBox>
+                        <Label Margin="6,0,0,0">Стоимость:</Label>
+                        <Label Content="{Binding Price}" ContentStringFormat=" {0:0.00}"/>
+                    </StackPanel>
                     <DataGrid x:Name="ProductComponentsDataGrid"
+                              Style="{DynamicResource dataGridStyle}"
                               ItemsSource="{Binding Path=ProductComponents, Mode=OneWay}"
                               IsReadOnly="True"
                               IsSynchronizedWithCurrentItem="True"
@@ -102,7 +126,7 @@
                             <DataGridTextColumn Header="Требуется" Binding="{Binding Required}"/>
                             <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
                             <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
-                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:#.00\}}"/>
+                            <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
                         </DataGrid.Columns>
                     </DataGrid>

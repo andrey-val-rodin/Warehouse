@@ -19,7 +19,10 @@ namespace Warehouse.ViewModel
             set
             {
                 if (SetProperty(ref _currentProductIndex, value))
+                {
                     RaisePropertyChanged(nameof(ProductComponents));
+                    RaisePropertyChanged(nameof(Price));
+                }
             }
         }
 
@@ -32,6 +35,8 @@ namespace Warehouse.ViewModel
             }
         }
 
+        public decimal Price => SqlProvider.GetProductPrice(CurrentProductIndex + 1);
+
         public DataView ProductComponents => SqlProvider.GetProductComponents(CurrentProductIndex + 1);
 
         public string[] ProductNames => SqlProvider.GetProductNames();
@@ -39,6 +44,7 @@ namespace Warehouse.ViewModel
         public override void Refresh()
         {
             RaisePropertyChanged(nameof(ProductComponents));
+            RaisePropertyChanged(nameof(Price));
         }
     }
 }

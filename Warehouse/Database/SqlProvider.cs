@@ -49,7 +49,7 @@ namespace Warehouse.Database
             return [.. result];
         }
 
-        public DataView GetComponents(int type)
+        public DataView GetComponents(int typeId)
         {
             var ds = new DataSet("Components");
             SQLiteCommand command;
@@ -65,13 +65,13 @@ SELECT
     Details
 FROM Component");
             string query;
-            if (type > 0)
+            if (typeId > 0)
             {
                 builder.Append("\n LEFT JOIN ComponentType ON Type = ComponentType.Id WHERE Component.Type = @type");
                 query = builder.ToString();
                 command = new SQLiteCommand(query, _connection);
                 System.Diagnostics.Debug.WriteLine(query);
-                command.Parameters.Add(new SQLiteParameter("@type", type));
+                command.Parameters.Add(new SQLiteParameter("@type", typeId));
 #if DEBUG
                 WriteParameters(command);
 #endif
@@ -128,7 +128,7 @@ WHERE Id=@id";
             return [.. result];
         }
 
-        public DataView GetProductComponents(int type)
+        public DataView GetProductComponents(int productId)
         {
             var ds = new DataSet("ProductComponents");
             string query = @"
@@ -145,7 +145,7 @@ FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @product";
             System.Diagnostics.Debug.WriteLine(query);
             var command = new SQLiteCommand(query, _connection);
-            command.Parameters.Add(new SQLiteParameter("@product", type));
+            command.Parameters.Add(new SQLiteParameter("@product", productId));
 #if DEBUG
             WriteParameters(command);
 #endif
@@ -165,7 +165,7 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
         }
 #endif
 
-        public decimal GetProductPrice(int type)
+        public decimal GetProductPrice(int productId)
         {
             var query = @"
 SELECT SUM(CAST(Component.Price AS REAL)/100) AS SumPrice
@@ -173,12 +173,17 @@ FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @product";
             System.Diagnostics.Debug.WriteLine(query);
             var command = new SQLiteCommand(query, _connection);
-            command.Parameters.Add(new SQLiteParameter("@product", type));
+            command.Parameters.Add(new SQLiteParameter("@product", productId));
 #if DEBUG
             WriteParameters(command);
 #endif
-            var result = (double)command.ExecuteScalar();
-            return (decimal)result;
+            var value = command.ExecuteScalar();
+            decimal result;
+            if (value == null || value is DBNull)
+                result = 0M;
+            else
+                result = (decimal)(double)value;
+            return result;
         }
 
         protected virtual void Dispose(bool disposing)
