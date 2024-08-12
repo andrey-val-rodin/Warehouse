@@ -18,8 +18,8 @@ namespace Warehouse.View
                 return new ValidationResult(false, "Это не число.");
 
             // Is positive?
-            if (number < 0)
-                return new ValidationResult(false, "Количество не может быть отрицательным.");
+            if (number <= 0)
+                return new ValidationResult(false, "Количество должно быть больше 0.");
 
             // Number is valid
             return new ValidationResult(true, null);

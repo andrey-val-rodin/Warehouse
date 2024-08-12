@@ -15,7 +15,7 @@ namespace Warehouse
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly SolidColorBrush _yellowBrush = new(Colors.LightYellow);
+        private static readonly SolidColorBrush _yellowBrush = new(Colors.Yellow);
         private static readonly SolidColorBrush _whiteBrush = new(Colors.White);
         private static readonly SolidColorBrush _redBrush = new(Colors.Red);
         private static readonly SolidColorBrush _blackBrush = new(Colors.Black);
@@ -83,16 +83,16 @@ namespace Warehouse
             if (source.SelectedItem is not DataRowView row)
                 return;
 
-            // Instantiate the dialog box
-            var dlg = new UpdateComponentDialog();
-
-            // Configure the dialog box
             var c = Component.FromDataRow(row.Row);
             var originalComponent = (Component)c.Clone();
 
-            dlg.Owner = this;
-            dlg.Title = c.Name;
-            dlg.Component = c;
+            // Instantiate the dialog box
+            var dlg = new UpdateComponentDialog
+            {
+                Owner = this,
+                Title = c.Name,
+                Component = c
+            };
 
             // Open the dialog box modally
             if (dlg.ShowDialog() is true)

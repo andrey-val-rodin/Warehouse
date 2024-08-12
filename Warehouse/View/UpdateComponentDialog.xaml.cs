@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Warehouse.Model;
@@ -13,6 +15,7 @@ namespace Warehouse.View
         public UpdateComponentDialog()
         {
             InitializeComponent();
+
             datePicker.DisplayDateStart = DateTime.Now;
             datePicker.DisplayDateEnd = datePicker.DisplayDateStart + TimeSpan.FromDays(180);
         }
@@ -59,15 +62,25 @@ namespace Warehouse.View
                 {
                     // If the dependency object is invalid, and it can receive the focus,
                     // set the focus
-                    if (node is IInputElement) Keyboard.Focus((IInputElement)node);
+                    if (node is IInputElement)
+                        Keyboard.Focus((IInputElement)node);
+
                     return false;
                 }
             }
 
             // If this dependency object is valid, check all child dependency objects
-            return LogicalTreeHelper.GetChildren(node).OfType<DependencyObject>().All(IsValid);
+            if (!LogicalTreeHelper.GetChildren(node).OfType<DependencyObject>().All(IsValid))
+                return false;
 
             // All dependency objects are valid
+            if (Component.Ordered != null && Component.ExpectedDate == null)
+            {
+                MessageBox.Show(this, "Пожалуйста, введите дату получения заказа", "Требуется дата");
+                return false;
+            }
+
+            return true;
         }
 
         private void ConfirmReceiving_Click(object sender, RoutedEventArgs e)
@@ -86,6 +99,17 @@ namespace Warehouse.View
             var component = (Component)Component.Clone();
             component.Ordered = null;
             Component = component;
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            // Format initial price text
+            var newText = Component.Price.Value.ToString("0.00", CultureInfo.InvariantCulture);
+            if (newText.EndsWith(".00"))
+                newText = newText.Replace(".00", "");
+
+            if (Component.Price != null)
+                price.Text = newText;
         }
     }
 }
