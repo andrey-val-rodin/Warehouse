@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Warehouse.Database;
 using Warehouse.Model;
@@ -33,11 +33,9 @@ namespace Warehouse
 
         private void ComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            var row = e.Row.DataContext as DataRowView;
-            if (row != null && sender == ComponentsDataGrid)
+            var component = e.Row.DataContext as Component;
+            if (component != null)
             {
-                var component = Component.FromDataRow(row.Row);
-
                 bool lackOfComponents = component.Remainder < 1;
                 bool overdueDate = DateTime.Now > component.ExpectedDate;
 
@@ -56,14 +54,11 @@ namespace Warehouse
 
         private void ProductComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
-            var row = e.Row.DataContext as DataRowView;
-            if (row != null && sender == ProductComponentsDataGrid)
+            var productComponent = e.Row.DataContext as ProductComponent;
+            if (productComponent != null)
             {
-                var productComponent = ProductComponent.FromDataRow(row.Row);
-
                 bool lackOfComponents = productComponent.Remainder < 1;
                 bool overdueDate = DateTime.Now > productComponent.ExpectedDate;
-
 
                 // Check remainder
                 e.Row.Background = lackOfComponents || overdueDate ? _yellowBrush : _whiteBrush;
@@ -80,10 +75,9 @@ namespace Warehouse
 
         private void ShowDialog(DataGrid source, TabViewModel model)
         {
-            if (source.SelectedItem is not DataRowView row)
+            if (source.SelectedItem is not Component c)
                 return;
 
-            var c = Component.FromDataRow(row.Row);
             var originalComponent = (Component)c.Clone();
 
             // Instantiate the dialog box
@@ -91,7 +85,8 @@ namespace Warehouse
             {
                 Owner = this,
                 Title = c.Name,
-                Component = c
+                // We have to clone original component to prevent changing component in DataGrid
+                Component = (Component)c.Clone()
             };
 
             // Open the dialog box modally
@@ -107,9 +102,26 @@ namespace Warehouse
                 if (hasChanges)
                 {
                     SqlProvider.UpdateComponent(dlg.Component);
-                    model?.Refresh();
-                    source.SelectedItem = null;
+                    model?.Refresh(dlg.Component);
                 }
+            }
+        }
+
+        private void ComponentsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ShowDialog(ComponentsDataGrid, Model?.ComponentViewModel);
+                e.Handled = true;
+            }
+        }
+
+        private void ProductComponentsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ShowDialog(ProductComponentsDataGrid, Model?.ProductComponentViewModel);
+                e.Handled = true;
             }
         }
     }

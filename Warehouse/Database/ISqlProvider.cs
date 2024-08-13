@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Warehouse.Model;
+﻿using Warehouse.Model;
 
 namespace Warehouse.Database
 {
@@ -7,10 +6,10 @@ namespace Warehouse.Database
     {
         bool Connect(string path);
         string[] GetComponentTypes();
-        DataView GetComponents(int typeId);
+        IEnumerable<Component> GetComponents(int typeId);
         void UpdateComponent(Component component);
         string[] GetProductNames();
-        DataView GetProductComponents(int productId);
+        IEnumerable<ProductComponent> GetProductComponents(int productId);
         decimal GetProductPrice(int productId);
     }
 }

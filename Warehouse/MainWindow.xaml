@@ -55,7 +55,8 @@
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
-                              LoadingRow="ComponentsDataGrid_LoadingRow">
+                              LoadingRow="ComponentsDataGrid_LoadingRow"
+                              PreviewKeyDown="ComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
                                 <Style.Setters>
@@ -68,11 +69,11 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
-                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
+                            <DataGridTextColumn Header="Имеется" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Свободно" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
-                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate}"/>
+                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -111,7 +112,8 @@
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
-                              LoadingRow="ProductComponentsDataGrid_LoadingRow">
+                              LoadingRow="ProductComponentsDataGrid_LoadingRow"
+                              PreviewKeyDown="ProductComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
                                 <Style.Setters>
@@ -125,11 +127,11 @@
                             <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Требуется" Binding="{Binding Required}"/>
-                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
-                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
+                            <DataGridTextColumn Header="Имеется" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Свободно" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
-                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate}"/>
+                            <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>

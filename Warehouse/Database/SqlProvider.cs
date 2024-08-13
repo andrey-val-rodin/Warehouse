@@ -49,7 +49,7 @@ namespace Warehouse.Database
             return [.. result];
         }
 
-        public DataView GetComponents(int typeId)
+        private DataView GetComponentsDataView(int typeId)
         {
             var ds = new DataSet("Components");
             SQLiteCommand command;
@@ -59,6 +59,7 @@ SELECT
     Component.Type,
     Component.Name,
     Component.Amount,
+    Component.AmountInUse,
     Component.Amount - Component.AmountInUse AS Remainder,
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
@@ -89,12 +90,22 @@ FROM Component");
 
             return ds.Tables[0].DefaultView;
         }
+        
+        public IEnumerable<Component> GetComponents(int typeId)
+        {
+            DataView components = GetComponentsDataView(typeId);
+            foreach(DataRow row in components.Table.Rows)
+            {
+                yield return Component.FromDataRow(row);
+            }
+        }
 
         public void UpdateComponent(Component component)
         {
             var query = @"
 UPDATE Component SET
     Amount = @amount,
+    AmountInUse = @amountInUse,
     Price = @price,
     Ordered = @ordered,
     ExpectedDate = @expectedDate,
@@ -104,6 +115,7 @@ WHERE Id=@id";
             System.Diagnostics.Debug.WriteLine(query);
             command.Parameters.Add(new SQLiteParameter("@id", component.Id));
             command.Parameters.Add(new SQLiteParameter("@amount", component.Amount));
+            command.Parameters.Add(new SQLiteParameter("@amountInUse", component.AmountInUse));
             command.Parameters.Add(new SQLiteParameter("@price", component.Price * 100));
             command.Parameters.Add(new SQLiteParameter("@ordered", component.Ordered));
             command.Parameters.Add(new SQLiteParameter("@expectedDate", component.ExpectedDate == null
@@ -133,7 +145,7 @@ WHERE Id=@id";
             return [.. result];
         }
 
-        public DataView GetProductComponents(int productId)
+        private DataView GetProductComponentsDataView(int productId)
         {
             var ds = new DataSet("ProductComponents");
             string query = @"
@@ -142,6 +154,7 @@ SELECT
     Component.Name,
     ProductComponent.Amount AS Required,
     Component.Amount,
+    Component.AmountInUse,
     Component.Amount - Component.AmountInUse AS Remainder,
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
@@ -159,6 +172,15 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             adapter.Fill(ds);
 
             return ds.Tables[0].DefaultView;
+        }
+
+        public IEnumerable<ProductComponent> GetProductComponents(int productId)
+        {
+            DataView components = GetProductComponentsDataView(productId);
+            foreach (DataRow row in components.Table.Rows)
+            {
+                yield return ProductComponent.FromDataRow(row);
+            }
         }
 
 #if DEBUG

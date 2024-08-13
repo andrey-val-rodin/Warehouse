@@ -1,14 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Data;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Warehouse.Database;
+using Warehouse.Model;
 
 namespace Warehouse.ViewModel
 {
     public class ProductComponentsViewModel : TabViewModel
     {
         private int _currentProductIndex;
-        private DataRowView _currentProductComponent;
+        private Component _currentProductComponent;
+        private ObservableCollection<ProductComponent> _productComponents;
+
+        public ProductComponentsViewModel()
+        {
+            _productComponents = new ObservableCollection<ProductComponent>(SqlProvider.GetProductComponents(1));
+        }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
@@ -20,15 +27,16 @@ namespace Warehouse.ViewModel
             {
                 if (SetProperty(ref _currentProductIndex, value))
                 {
+                    _productComponents = new ObservableCollection<ProductComponent>(SqlProvider.GetProductComponents(value + 1));
                     RaisePropertyChanged(nameof(ProductComponents));
                     RaisePropertyChanged(nameof(Price));
                 }
             }
         }
 
-        public DataRowView CurrentProductComponent
+        public Component CurrentProductComponent
         {
-            get { return _currentProductComponent; }
+            get => _currentProductComponent;
             set
             {
                 SetProperty(ref _currentProductComponent, value);
@@ -37,13 +45,16 @@ namespace Warehouse.ViewModel
 
         public decimal Price => SqlProvider.GetProductPrice(CurrentProductIndex + 1);
 
-        public DataView ProductComponents => SqlProvider.GetProductComponents(CurrentProductIndex + 1);
+        public ObservableCollection<ProductComponent> ProductComponents => _productComponents;
 
         public string[] ProductNames => SqlProvider.GetProductNames();
 
-        public override void Refresh()
+        public override void Refresh<T>(T component)
         {
-            RaisePropertyChanged(nameof(ProductComponents));
+            var comp = component as ProductComponent;
+            var index = ProductComponents.IndexOf(ProductComponents.First(c => c.Id == comp.Id));
+            ProductComponents[index] = comp;
+            CurrentProductComponent = comp;
             RaisePropertyChanged(nameof(Price));
         }
     }

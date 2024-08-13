@@ -18,11 +18,13 @@ namespace Warehouse.Model
         [Range(1, 20)]
         public int Type { get; set; }
 
-        [DisplayName("Наличие")]
+        [DisplayName("Имеется")]
         [Range(1, int.MaxValue)]
         public int Amount { get; set; }
 
-        [DisplayName("Остаток")]
+        public int AmountInUse { get; set; }
+
+        [DisplayName("Свободно")]
         public int Remainder { get; set; }
 
         [DisplayName("Цена")]

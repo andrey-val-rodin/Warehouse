@@ -1,14 +1,21 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Data;
+using System.Collections.ObjectModel;
 using System.Windows;
 using Warehouse.Database;
+using Warehouse.Model;
 
 namespace Warehouse.ViewModel
 {
     public class ComponentsViewModel : TabViewModel
     {
         private int _currentType;
-        private DataRowView _currentComponent;
+        private Component _currentComponent;
+        private ObservableCollection<Component> _components;
+
+        public ComponentsViewModel()
+        {
+            _components = new ObservableCollection<Component>(SqlProvider.GetComponents(0));
+        }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
@@ -19,20 +26,23 @@ namespace Warehouse.ViewModel
             set
             {
                 if (SetProperty(ref _currentType, value))
+                {
+                    _components = new ObservableCollection<Component>(SqlProvider.GetComponents(value));
                     RaisePropertyChanged(nameof(Components));
+                }
             }
         }
 
-        public DataRowView CurrentComponent
+        public Component CurrentComponent
         {
-            get { return _currentComponent; }
+            get => _currentComponent;
             set
             {
                 SetProperty(ref _currentComponent, value);
             }
         }
 
-        public DataView Components => SqlProvider.GetComponents(CurrentType);
+        public ObservableCollection<Component> Components => _components;
 
         public string[] ComponentTypes
         {
@@ -43,9 +53,12 @@ namespace Warehouse.ViewModel
             }
         }
 
-        public override void Refresh()
+        public override void Refresh<T>(T component)
         {
-            RaisePropertyChanged(nameof(Components));
+            var comp = component as Component;
+            var index = Components.IndexOf(Components.First(c => c.Id == comp.Id));
+            Components[index] = comp;
+            CurrentComponent = comp;
         }
     }
 }

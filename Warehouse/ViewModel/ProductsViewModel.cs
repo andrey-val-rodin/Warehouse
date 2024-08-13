@@ -18,7 +18,7 @@
             }
         }
 
-        public override void Refresh()
+        public override void Refresh<T>(T position)
         {
             throw new NotImplementedException();
         }

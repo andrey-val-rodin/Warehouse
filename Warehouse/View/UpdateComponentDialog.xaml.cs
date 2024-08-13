@@ -45,6 +45,9 @@ namespace Warehouse.View
             if (!IsValid(this))
                 return;
 
+            // Recalculate Remainder
+            Component.Remainder = Component.Amount - Component.AmountInUse;
+
             // Dialog box accepted
             DialogResult = true;
         }
@@ -103,13 +106,17 @@ namespace Warehouse.View
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
-            // Format initial price text
-            var newText = Component.Price.Value.ToString("0.00", CultureInfo.InvariantCulture);
-            if (newText.EndsWith(".00"))
-                newText = newText.Replace(".00", "");
+            newAmount.Focus();
 
             if (Component.Price != null)
+            {
+                // Format initial price text
+                var newText = Component.Price.Value.ToString("0.00", CultureInfo.InvariantCulture);
+                if (newText.EndsWith(".00"))
+                    newText = newText.Replace(".00", "");
+
                 price.Text = newText;
+            }
         }
     }
 }
