@@ -55,6 +55,7 @@
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
+                              Sorting="ComponentsDataGrid_Sorting"
                               LoadingRow="ComponentsDataGrid_LoadingRow"
                               PreviewKeyDown="ComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
@@ -112,6 +113,7 @@
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
+                              Sorting="ProductComponentsDataGrid_Sorting"
                               LoadingRow="ProductComponentsDataGrid_LoadingRow"
                               PreviewKeyDown="ProductComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>

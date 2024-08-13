@@ -1,12 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Collections;
+using System.Data.Common;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Warehouse.Database;
 using Warehouse.Model;
 using Warehouse.View;
 using Warehouse.ViewModel;
+using ListSortDirection=System.ComponentModel.ListSortDirection;
 
 namespace Warehouse
 {
@@ -122,6 +126,55 @@ namespace Warehouse
             {
                 ShowDialog(ProductComponentsDataGrid, Model?.ProductComponentViewModel);
                 e.Handled = true;
+            }
+        }
+
+        private void ComponentsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            SortColumn(ComponentsDataGrid, e);
+        }
+
+        private void ProductComponentsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            SortColumn(ProductComponentsDataGrid, e);
+        }
+
+        private void SortColumn(DataGrid source, DataGridSortingEventArgs e)
+        {
+            DataGridColumn column = e.Column;
+
+            // custom sort for column
+            if (column.SortMemberPath == "ExpectedDate" ||
+                column.SortMemberPath == "Ordered" ||
+                column.SortMemberPath == "Price")
+            {
+                // Prevent auto sorting
+                e.Handled = true;
+
+                // sort direction
+                column.SortDirection = (column.SortDirection != ListSortDirection.Ascending)
+                    ? ListSortDirection.Ascending
+                    : ListSortDirection.Descending;
+
+                // comparer
+                ListCollectionView lcv = (ListCollectionView)CollectionViewSource.GetDefaultView(source.ItemsSource);
+                var comparer = CreateComparer(column.SortMemberPath, column.SortDirection.Value);
+                lcv.CustomSort = comparer;
+            }
+        }
+
+        private IComparer CreateComparer(string sortMemberPath, ListSortDirection direction)
+        {
+            switch(sortMemberPath)
+            {
+                case "ExpectedDate":
+                    return new DateComparer(direction);
+                case "Ordered":
+                    return new OrderedComparer(direction);
+                case "Price":
+                    return new PriceComparer(direction);
+                default:
+                    throw new InvalidOperationException("Unsupported sortMemberPath");
             }
         }
     }
