@@ -11,7 +11,7 @@ namespace Warehouse.Model
         public int Id { get; set; }
 
         [DisplayName("Наименование")]
-        [MinLength(1), MaxLength(40)]
+        [StringLength(40)]
         public string Name { get; set; }
 
         [DisplayName("Тип")]
@@ -38,7 +38,7 @@ namespace Warehouse.Model
         public DateTime? ExpectedDate { get; set; }
 
         [DisplayName("Заметки")]
-        [MinLength(1), MaxLength(1024)]
+        [StringLength(1024)]
         public string Details { get; set; }
 
         static public Component FromDataRow(DataRow row)

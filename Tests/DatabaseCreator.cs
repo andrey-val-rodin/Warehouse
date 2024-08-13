@@ -66,17 +66,18 @@ CREATE TABLE ProductComponent (
 STRICT;
 
 CREATE TABLE Fabrication (
-    Id        INTEGER PRIMARY KEY AUTOINCREMENT
-                      NOT NULL,
-    ProductId INTEGER REFERENCES Product (id),
-    Client    TEXT,
-    Details   TEXT,
-    TableId   TEXT,
-    Status    INTEGER NOT NULL
-                      DEFAULT (0),
-    Started   TEXT    NOT NULL
-                      DEFAULT (DATETIME('now', 'localtime') ),
-    Closed    TEXT
+    Id              INTEGER PRIMARY KEY AUTOINCREMENT
+                            NOT NULL,
+    ProductId       INTEGER REFERENCES Product (id),
+    Client          TEXT,
+    Details         TEXT,
+    TableId         TEXT,
+    Status          INTEGER NOT NULL
+                            DEFAULT (0),
+    StartedDate     TEXT    NOT NULL
+                            DEFAULT (DATE('now', 'localtime') ),
+    ExpectedDate    TEXT,
+    ClosedDate      TEXT
 )
 STRICT;
 ";

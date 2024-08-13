@@ -502,15 +502,26 @@ namespace Tests
                 ]);
         }
 
-        #region Helpers
-        private static IEnumerable<object> GetColumn(int index, DataView dataView)
+        [Fact]
+        public void AddProductAmount_ById7_CorrespondedAmountsInUseWereCorrectlyIncreased()
         {
-            foreach (DataRow row in dataView.Table.Rows)
+            var productComponents = SqlProvider.GetProductComponents(7).ToArray();
+            var oldAmountsInUse = GetAmountInUseValues(productComponents).ToArray();
+            var requiredValues = GetRequiredValues(productComponents).ToArray();
+
+            SqlProvider.AddProductAmounts(7);
+
+            var newAmountsInUse = GetAmountInUseValues(SqlProvider.GetProductComponents(7)).ToArray();
+
+            Assert.Equal(productComponents.Length, newAmountsInUse.Length);
+            Assert.Equal(oldAmountsInUse.Length, newAmountsInUse.Length);
+            for (int i = 0; i < oldAmountsInUse.Length; i++)
             {
-                yield return row[index];
+                Assert.Equal(oldAmountsInUse[i] + requiredValues[i], newAmountsInUse[i]);
             }
         }
 
+        #region Helpers
         private static IEnumerable<int> GetIdValues(IEnumerable<Component> components)
         {
             foreach (Component component in components)
@@ -532,6 +543,22 @@ namespace Tests
             foreach (ProductComponent component in productComponents)
             {
                 yield return component.Required;
+            }
+        }
+
+        private static IEnumerable<int> GetAmountValues(IEnumerable<Component> components)
+        {
+            foreach (Component component in components)
+            {
+                yield return component.Amount;
+            }
+        }
+
+        private static IEnumerable<int> GetAmountInUseValues(IEnumerable<Component> components)
+        {
+            foreach (Component component in components)
+            {
+                yield return component.AmountInUse;
             }
         }
         #endregion
