@@ -503,13 +503,13 @@ namespace Tests
         }
 
         [Fact]
-        public void AddProductAmount_ById7_CorrespondedAmountsInUseWereCorrectlyIncreased()
+        public void AddProductAmountsInUse_ById7_CorrespondedAmountsInUseWereCorrectlyIncreased()
         {
             var productComponents = SqlProvider.GetProductComponents(7).ToArray();
             var oldAmountsInUse = GetAmountInUseValues(productComponents).ToArray();
             var requiredValues = GetRequiredValues(productComponents).ToArray();
 
-            SqlProvider.AddProductAmounts(7);
+            SqlProvider.AddProductAmountsInUse(7);
 
             var newAmountsInUse = GetAmountInUseValues(SqlProvider.GetProductComponents(7)).ToArray();
 
@@ -518,6 +518,44 @@ namespace Tests
             for (int i = 0; i < oldAmountsInUse.Length; i++)
             {
                 Assert.Equal(oldAmountsInUse[i] + requiredValues[i], newAmountsInUse[i]);
+            }
+        }
+
+        [Fact]
+        public void SubtractProductAmountsInUse_ById17_CorrespondedAmountsInUseWereCorrectlyIncreased()
+        {
+            var productComponents = SqlProvider.GetProductComponents(17).ToArray();
+            var oldAmountsInUse = GetAmountInUseValues(productComponents).ToArray();
+            var requiredValues = GetRequiredValues(productComponents).ToArray();
+
+            SqlProvider.SubtractProductAmountsInUse(17);
+
+            var newAmountsInUse = GetAmountInUseValues(SqlProvider.GetProductComponents(17)).ToArray();
+
+            Assert.Equal(productComponents.Length, newAmountsInUse.Length);
+            Assert.Equal(oldAmountsInUse.Length, newAmountsInUse.Length);
+            for (int i = 0; i < oldAmountsInUse.Length; i++)
+            {
+                Assert.Equal(oldAmountsInUse[i] - requiredValues[i], newAmountsInUse[i]);
+            }
+        }
+
+        [Fact]
+        public void SubtractProductAmounts_ById4_CorrespondedAmountsWereCorrectlyIncreased()
+        {
+            var productComponents = SqlProvider.GetProductComponents(4).ToArray();
+            var oldAmounts = GetAmountValues(productComponents).ToArray();
+            var requiredValues = GetRequiredValues(productComponents).ToArray();
+
+            SqlProvider.SubtractProductAmounts(4);
+
+            var newAmounts = GetAmountValues(SqlProvider.GetProductComponents(4)).ToArray();
+
+            Assert.Equal(productComponents.Length, newAmounts.Length);
+            Assert.Equal(oldAmounts.Length, newAmounts.Length);
+            for (int i = 0; i < oldAmounts.Length; i++)
+            {
+                Assert.Equal(oldAmounts[i] - requiredValues[i], newAmounts[i]);
             }
         }
 

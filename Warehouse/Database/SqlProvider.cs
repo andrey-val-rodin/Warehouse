@@ -204,11 +204,31 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             return result;
         }
 
-        public void AddProductAmounts(int productId)
+        public void AddProductAmountsInUse(int productId)
         {
             var query = @"
 UPDATE Component
-SET AmountInUse = (SELECT AmountInUse + pc.Amount
+SET AmountInUse = (SELECT Component.AmountInUse + pc.Amount
+					FROM ProductComponent pc
+					WHERE Component.Id = pc.ComponentId AND pc.ProductId = @productId)
+WHERE EXISTS (SELECT pc.Amount
+					FROM ProductComponent pc
+					WHERE Component.Id = pc.ComponentId AND pc.ProductId = @productId)
+";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@productId", productId));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            command.ExecuteNonQuery();
+        }
+
+        public void SubtractProductAmountsInUse(int productId)
+        {
+            var query = @"
+UPDATE Component
+SET AmountInUse = (SELECT Component.AmountInUse - pc.Amount
 					FROM ProductComponent pc
 					WHERE Component.Id = pc.ComponentId AND pc.ProductId = @productId)
 WHERE EXISTS (SELECT pc.Amount
@@ -226,7 +246,22 @@ WHERE EXISTS (SELECT pc.Amount
 
         public void SubtractProductAmounts(int productId)
         {
-            throw new NotImplementedException();
+            var query = @"
+UPDATE Component
+SET Amount = (SELECT Component.Amount - pc.Amount
+					FROM ProductComponent pc
+					WHERE Component.Id = pc.ComponentId AND pc.ProductId = @productId)
+WHERE EXISTS (SELECT pc.Amount
+					FROM ProductComponent pc
+					WHERE Component.Id = pc.ComponentId AND pc.ProductId = @productId)
+";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@productId", productId));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            command.ExecuteNonQuery();
         }
 
 #if DEBUG

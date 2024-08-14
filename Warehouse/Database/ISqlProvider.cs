@@ -11,7 +11,8 @@ namespace Warehouse.Database
         string[] GetProductNames();
         IEnumerable<ProductComponent> GetProductComponents(int productId);
         decimal GetProductPrice(int productId);
-        void AddProductAmounts(int productId);
+        void AddProductAmountsInUse(int productId);
+        void SubtractProductAmountsInUse(int productId);
         void SubtractProductAmounts(int productId);
     }
 }
