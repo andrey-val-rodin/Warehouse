@@ -14,7 +14,7 @@ namespace Warehouse.ViewModel
 
         public ProductComponentsViewModel()
         {
-            _productComponents = new ObservableCollection<ProductComponent>(SqlProvider.GetProductComponents(1));
+            Update();
         }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
@@ -27,8 +27,7 @@ namespace Warehouse.ViewModel
             {
                 if (SetProperty(ref _currentProductIndex, value))
                 {
-                    _productComponents = new ObservableCollection<ProductComponent>(SqlProvider.GetProductComponents(value + 1));
-                    RaisePropertyChanged(nameof(ProductComponents));
+                    Update();
                     RaisePropertyChanged(nameof(Price));
                 }
             }
@@ -56,6 +55,13 @@ namespace Warehouse.ViewModel
             ProductComponents[index] = comp;
             CurrentProductComponent = comp;
             RaisePropertyChanged(nameof(Price));
+        }
+
+        public override void Update()
+        {
+            _productComponents = new ObservableCollection<ProductComponent>(
+                SqlProvider.GetProductComponents(CurrentProductIndex + 1));
+            RaisePropertyChanged(nameof(ProductComponents));
         }
     }
 }

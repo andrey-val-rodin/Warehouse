@@ -11,9 +11,9 @@ namespace Warehouse.View
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is ProductComponent pc)
-                return pc.Amount < pc.Required;
+                return pc.Remainder < pc.Required;
             else if (value is Component c)
-                return c.Amount <= 1;
+                return c.Remainder < 0;
 
             return false;
         }

@@ -14,7 +14,7 @@ namespace Warehouse.ViewModel
 
         public ComponentsViewModel()
         {
-            _components = new ObservableCollection<Component>(SqlProvider.GetComponents(0));
+            Update();
         }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
@@ -27,8 +27,7 @@ namespace Warehouse.ViewModel
             {
                 if (SetProperty(ref _currentType, value))
                 {
-                    _components = new ObservableCollection<Component>(SqlProvider.GetComponents(value));
-                    RaisePropertyChanged(nameof(Components));
+                    Update();
                 }
             }
         }
@@ -59,6 +58,12 @@ namespace Warehouse.ViewModel
             var index = Components.IndexOf(Components.First(c => c.Id == comp.Id));
             Components[index] = comp;
             CurrentComponent = comp;
+        }
+
+        public override void Update()
+        {
+            _components = new ObservableCollection<Component>(SqlProvider.GetComponents(CurrentType));
+            RaisePropertyChanged(nameof(Components));
         }
     }
 }

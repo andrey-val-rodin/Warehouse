@@ -138,5 +138,20 @@ namespace Warehouse
                     throw new InvalidOperationException("Unsupported sortMemberPath");
             }
         }
+
+        private void ComponentTab_Selected(object sender, RoutedEventArgs e)
+        {
+            Model?.ComponentViewModel.Update();
+        }
+
+        private void ProductTab_Selected(object sender, RoutedEventArgs e)
+        {
+            Model?.ProductComponentViewModel.Update();
+        }
+
+        private void FabricationTab_Selected(object sender, RoutedEventArgs e)
+        {
+            Model.FabricationViewModel.Update();
+        }
     }
 }
