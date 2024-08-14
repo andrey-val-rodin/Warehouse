@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Warehouse"
-        xmlns:viewmodels="clr-namespace:Warehouse.ViewModel"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:viewmodel="clr-namespace:Warehouse.ViewModel"
+        xmlns:view="clr-namespace:Warehouse.View"
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
         mc:Ignorable="d"
         Title="Склад" Height="700" Width="1000">
     <TabControl>
@@ -56,7 +57,6 @@
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
                               Sorting="ComponentsDataGrid_Sorting"
-                              LoadingRow="ComponentsDataGrid_LoadingRow"
                               PreviewKeyDown="ComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
@@ -65,13 +65,28 @@
                                                  Handler="ComponentsDataGrid_MouseDoubleClick"/>
                                     <Setter Property="TextBlock.TextAlignment" Value="Right" />
                                 </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:InsufficientAmountConverter.Instance}}" Value="True">
+                                        <Setter Property="Background" Value="#EBDB55"/>
+                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:OverdueDateConverter.Instance}}" Value="True">
+                                        <Setter Property="Background" Value="Orange"/>
+                                        <Setter Property="BorderBrush" Value="#d8ca4e"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#0078D7" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="BorderBrush" Value="#0078D7"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Имеется" Binding="{Binding Amount}"/>
-                            <DataGridTextColumn Header="Свободно" Binding="{Binding Remainder}"/>
+                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
                             <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
@@ -114,7 +129,6 @@
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
                               Sorting="ProductComponentsDataGrid_Sorting"
-                              LoadingRow="ProductComponentsDataGrid_LoadingRow"
                               PreviewKeyDown="ProductComponentsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridCell">
@@ -123,14 +137,29 @@
                                                  Handler="ProductComponentsDataGridCell_MouseDoubleClick"/>
                                     <Setter Property="TextBlock.TextAlignment" Value="Right"/>
                                 </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:InsufficientAmountConverter.Instance}}" Value="True">
+                                        <Setter Property="Background" Value="#EBDB55"/>
+                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:OverdueDateConverter.Instance}}" Value="True">
+                                        <Setter Property="Background" Value="Orange"/>
+                                        <Setter Property="BorderBrush" Value="#d8ca4e"/>
+                                    </DataTrigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#0078D7" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="BorderBrush" Value="#0078D7"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Требуется" Binding="{Binding Required}"/>
-                            <DataGridTextColumn Header="Имеется" Binding="{Binding Amount}"/>
-                            <DataGridTextColumn Header="Свободно" Binding="{Binding Remainder}"/>
+                            <DataGridTextColumn Header="Наличие" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Остаток" Binding="{Binding Remainder}"/>
                             <DataGridTextColumn Header="Цена" Binding="{Binding Price, StringFormat=\{0:0.00\}}"/>
                             <DataGridTextColumn Header="Заказано" Binding="{Binding Ordered}"/>
                             <DataGridTextColumn Header="Дата поставки" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>

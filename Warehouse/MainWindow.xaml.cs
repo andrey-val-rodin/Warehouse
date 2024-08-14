@@ -1,16 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
-using System.Data.Common;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using Warehouse.Database;
 using Warehouse.Model;
 using Warehouse.View;
 using Warehouse.ViewModel;
-using ListSortDirection=System.ComponentModel.ListSortDirection;
+using ListSortDirection = System.ComponentModel.ListSortDirection;
 
 namespace Warehouse
 {
@@ -19,11 +17,6 @@ namespace Warehouse
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly SolidColorBrush _yellowBrush = new(Colors.Yellow);
-        private static readonly SolidColorBrush _whiteBrush = new(Colors.White);
-        private static readonly SolidColorBrush _redBrush = new(Colors.Red);
-        private static readonly SolidColorBrush _blackBrush = new(Colors.Black);
-
         public MainWindow()
         {
             InitializeComponent();
@@ -35,41 +28,9 @@ namespace Warehouse
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
         private MainViewModel Model => DataContext as MainViewModel;
 
-        private void ComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            var component = e.Row.DataContext as Component;
-            if (component != null)
-            {
-                bool lackOfComponents = component.Remainder < 1;
-                bool overdueDate = DateTime.Now > component.ExpectedDate;
-
-                // Check remainder
-                e.Row.Background = lackOfComponents || overdueDate ? _yellowBrush : _whiteBrush;
-
-                // Check expected date
-                e.Row.Foreground = overdueDate ? _redBrush : _blackBrush;
-            }
-        }
-
-        private void ComponentsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ComponentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ShowDialog(ComponentsDataGrid, Model?.ComponentViewModel);
-        }
-
-        private void ProductComponentsDataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            var productComponent = e.Row.DataContext as ProductComponent;
-            if (productComponent != null)
-            {
-                bool lackOfComponents = productComponent.Remainder < 1;
-                bool overdueDate = DateTime.Now > productComponent.ExpectedDate;
-
-                // Check remainder
-                e.Row.Background = lackOfComponents || overdueDate ? _yellowBrush : _whiteBrush;
-
-                // Check expected date
-                e.Row.Foreground = overdueDate ? _redBrush : _blackBrush;
-            }
         }
 
         private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
