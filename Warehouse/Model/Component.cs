@@ -38,7 +38,7 @@ namespace Warehouse.Model
         public DateTime? ExpectedDate { get; set; }
 
         [DisplayName("Заметки")]
-        [StringLength(1024)]
+        [StringLength(10000)]
         public string Details { get; set; }
 
         static public Component FromDataRow(DataRow row)

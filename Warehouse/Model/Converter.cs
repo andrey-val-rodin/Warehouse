@@ -19,7 +19,11 @@ namespace Warehouse.Model
                     object item = row[name];
                     PropertyInfo p = value;
                     if (p.PropertyType != col.DataType)
-                        item = ChangeType(item, p.PropertyType);
+                    {
+                        item = p.PropertyType.IsEnum
+                            ? Enum.ToObject(p.PropertyType, item)
+                            : ChangeType(item, p.PropertyType);
+                    }
                     p.SetValue(model, item, null);
                 }
             }

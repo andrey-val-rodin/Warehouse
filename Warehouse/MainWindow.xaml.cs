@@ -153,5 +153,20 @@ namespace Warehouse
         {
             Model.FabricationViewModel.Update();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void FabricationsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void FabricationsDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

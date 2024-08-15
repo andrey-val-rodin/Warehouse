@@ -29,6 +29,75 @@
             <TabItem.Header>
                 <Label FontSize="14" FontWeight="Bold">Производство</Label>
             </TabItem.Header>
+            <TabItem.Content>
+                <DockPanel Margin="4,8,4,2"
+                           LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal"
+                                Margin="0,0,0,-2"
+                                Height="26">
+                        <ComboBox DockPanel.Dock="Top"
+                                  SelectedIndex="{Binding CurrentModeIndex}"
+                                  ItemsSource="{Binding ModeNames}"
+                                  Width="190"
+                                  Height="22"
+                                  MaxDropDownHeight="Auto"
+                                  FontWeight="Bold"
+                                  HorizontalAlignment="Left"/>
+                        <Button Content="Новое производство"
+                                Margin="12,0,0,0"
+                                Height="22"
+                                Width="130"
+                                Click="Button_Click"/>
+                    </StackPanel>
+                    <DataGrid x:Name="FabricationsDataGrid"
+                              Style="{DynamicResource dataGridStyle}"
+                              ItemsSource="{Binding Path=Fabrications, Mode=OneWay}"
+                              IsReadOnly="True"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedItem="CurrentFabrication"
+                              SelectionMode="Single"
+                              GridLinesVisibility="Vertical"
+                              AutoGenerateColumns="False"
+                              Margin="0,6,0,0"
+                              PreviewKeyDown="FabricationsDataGrid_PreviewKeyDown">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="2">
+                                        <Setter Property="Background" Value="#EBDB55"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="DataGridCell">
+                                <Style.Setters>
+                                    <EventSetter Event="MouseDoubleClick"
+                                                 Handler="FabricationsDataGridCell_MouseDoubleClick"/>
+                                    <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#0078D7" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="BorderBrush" Value="#0078D7"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}"/>
+                            <DataGridTextColumn Header="Id стола" Binding="{Binding TableId}"/>
+                            <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
+                            <DataGridTextColumn Header="Закрыто" Binding="{Binding ClosedDate, StringFormat=dd.MM.yyyy}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem.Content>
         </TabItem>
         
         <TabItem x:Name="ComponentTab"
@@ -47,8 +116,7 @@
                               Width="190"
                               MaxDropDownHeight="Auto"
                               FontWeight="Bold"
-                              HorizontalAlignment="Left">
-                    </ComboBox>
+                              HorizontalAlignment="Left"/>
                     <DataGrid x:Name="ComponentsDataGrid"
                               Style="{DynamicResource dataGridStyle}"
                               ItemsSource="{Binding Path=Components, Mode=OneWay}"
@@ -64,8 +132,16 @@
                         <DataGrid.Resources>
                             <Style TargetType="DataGridRow">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ProblemConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="LightYellow"/>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="3">
+                                        <Setter Property="Background" Value="#FFF9A6"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="2">
+                                        <Setter Property="Background" Value="#EBDB55"/>
+                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="1">
+                                        <Setter Property="Background" Value="Orange"/>
+                                        <Setter Property="BorderBrush" Value="Orange"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -74,16 +150,11 @@
                                     <EventSetter Event="MouseDoubleClick"
                                                  Handler="ComponentsDataGrid_MouseDoubleClick"/>
                                     <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
                                 </Style.Setters>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:InsufficientAmountConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="#EBDB55"/>
-                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:OverdueDateConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="Orange"/>
-                                        <Setter Property="BorderBrush" Value="#d8ca4e"/>
-                                    </DataTrigger>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter Property="Background" Value="#0078D7" />
                                         <Setter Property="Foreground" Value="White" />
@@ -125,8 +196,7 @@
                                   Height="22"
                                   MaxDropDownHeight="Auto"
                                   FontWeight="Bold"
-                                  HorizontalAlignment="Left">
-                        </ComboBox>
+                                  HorizontalAlignment="Left"/>
                         <Label Margin="6,0,0,0">Стоимость:</Label>
                         <Label Content="{Binding Price}" ContentStringFormat=" {0:0.00}"/>
                     </StackPanel>
@@ -145,8 +215,16 @@
                         <DataGrid.Resources>
                             <Style TargetType="DataGridRow">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ProblemConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="LightYellow"/>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="3">
+                                        <Setter Property="Background" Value="#FFF9A6"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="2">
+                                        <Setter Property="Background" Value="#EBDB55"/>
+                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="1">
+                                        <Setter Property="Background" Value="Orange"/>
+                                        <Setter Property="BorderBrush" Value="Orange"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -155,16 +233,11 @@
                                     <EventSetter Event="MouseDoubleClick"
                                                  Handler="ProductComponentsDataGridCell_MouseDoubleClick"/>
                                     <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
                                 </Style.Setters>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:InsufficientAmountConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="#EBDB55"/>
-                                        <Setter Property="BorderBrush" Value="#EBDB55"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:OverdueDateConverter.Instance}}" Value="True">
-                                        <Setter Property="Background" Value="Orange"/>
-                                        <Setter Property="BorderBrush" Value="#d8ca4e"/>
-                                    </DataTrigger>
                                     <Trigger Property="IsSelected" Value="True">
                                         <Setter Property="Background" Value="#0078D7" />
                                         <Setter Property="Foreground" Value="White" />

@@ -12,17 +12,39 @@ namespace Warehouse.Model
 
         public int ProductId { get; set; }
 
+        [DisplayName("Изделие")]
+        public string ProductName { get; set; }
+
         [DisplayName("Клиент")]
-        [StringLength(1024)]
+        [StringLength(10000)]
         public string Client { get; set; }
 
         [DisplayName("Заметки")]
-        [StringLength(1024)]
+        [StringLength(10000)]
         public string Details { get; set; }
 
         [DisplayName("id стола")]
         [StringLength(12)]
         public string TableId { get; set; }
+
+        public FabricationStatus Status { get; set; }
+        public string StatusText
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case FabricationStatus.Opened:
+                        return "Открыто";
+                    case FabricationStatus.Closed:
+                        return "Закрыто";
+                    case FabricationStatus.Cancelled:
+                        return "Отменено";
+                    default:
+                        return "Unknown";
+                }
+            }
+        }
 
         [DisplayName("Открыто")]
         public DateTime StartedDate { get; set; }

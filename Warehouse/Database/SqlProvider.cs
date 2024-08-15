@@ -264,6 +264,76 @@ WHERE EXISTS (SELECT pc.Amount
             command.ExecuteNonQuery();
         }
 
+        private DataView GetOpenedFabricationsDataView()
+        {
+            var ds = new DataSet("Fabrications");
+            string query = @"
+SELECT
+    Fabrication.Id,
+    Fabrication.ProductId,
+    Product.Name AS ProductName,
+    Fabrication.Client,
+    Fabrication.Details,
+    Fabrication.Status,
+    Fabrication.StartedDate,
+    Fabrication.ExpectedDate,
+    Fabrication.ClosedDate
+FROM Fabrication
+LEFT JOIN Product ON Fabrication.ProductId = Product.Id
+WHERE Fabrication.Status = 0
+ORDER BY Fabrication.Id ASC";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            using var adapter = new SQLiteDataAdapter(command);
+            adapter.Fill(ds);
+
+            return ds.Tables[0].DefaultView;
+        }
+
+        private DataView GetHistoricalFabricationsDataView()
+        {
+            var ds = new DataSet("Fabrications");
+            string query = @"
+SELECT
+    Fabrication.Id,
+    Fabrication.ProductId,
+    Product.Name AS ProductName,
+    Fabrication.Client,
+    Fabrication.Details,
+    Fabrication.Status,
+    Fabrication.StartedDate,
+    Fabrication.ExpectedDate,
+    Fabrication.ClosedDate
+FROM Fabrication
+LEFT JOIN Product ON Fabrication.ProductId = Product.Id
+WHERE Fabrication.Status <> 0
+ORDER BY Fabrication.Id ASC";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            using var adapter = new SQLiteDataAdapter(command);
+            adapter.Fill(ds);
+
+            return ds.Tables[0].DefaultView;
+        }
+
+        public IEnumerable<Fabrication> GetOpenedFabrications()
+        {
+            DataView fabrications = GetOpenedFabricationsDataView();
+            foreach (DataRow row in fabrications.Table.Rows)
+            {
+                yield return Fabrication.FromDataRow(row);
+            }
+        }
+
+        public IEnumerable<Fabrication> GetHistoricalFabrications()
+        {
+            DataView fabrications = GetHistoricalFabricationsDataView();
+            foreach (DataRow row in fabrications.Table.Rows)
+            {
+                yield return Fabrication.FromDataRow(row);
+            }
+        }
+
 #if DEBUG
         private static void WriteParameters(SQLiteCommand command)
         {
