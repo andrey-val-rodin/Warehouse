@@ -30,6 +30,14 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="{x:Type DatePicker}">
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="ToolTip" 
+                                Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style TargetType="{x:Type StackPanel}">
                 <Setter Property="Margin" Value="0,10,0,0" />
                 <Setter Property="Orientation" Value="Horizontal" />
@@ -149,7 +157,7 @@
             <DatePicker.SelectedDate>
                 <Binding Path="ExpectedDate" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local:DateValidationRule x:Name="dataValidationRule"/>
+                        <local:ComponentDateValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </DatePicker.SelectedDate>
@@ -175,6 +183,5 @@
             <Button Name="okButton" Click="okButton_Click" IsDefault="True">OK</Button>
             <Button Name="cancelButton" Click="cancelButton_Click" IsCancel="True">Cancel</Button>
         </StackPanel>
-
     </Grid >
 </Window>

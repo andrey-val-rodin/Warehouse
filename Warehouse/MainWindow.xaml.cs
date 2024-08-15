@@ -30,20 +30,20 @@ namespace Warehouse
 
         private void ComponentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ShowDialog(ComponentsDataGrid, Model?.ComponentViewModel);
+            ShowComponentDialog(ComponentsDataGrid, Model.ComponentViewModel);
         }
 
         private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ShowDialog(ProductComponentsDataGrid, Model?.ProductComponentViewModel);
+            ShowComponentDialog(ProductComponentsDataGrid, Model.ProductComponentViewModel);
         }
 
-        private void ShowDialog(DataGrid source, TabViewModel model)
+        private void ShowComponentDialog(DataGrid source, TabViewModel model)
         {
             if (source.SelectedItem is not Component c)
                 return;
 
-            var originalComponent = (Component)c.Clone();
+            var originalComponent = c;
 
             // Instantiate the dialog box
             var dlg = new UpdateComponentDialog
@@ -67,16 +67,45 @@ namespace Warehouse
                 if (hasChanges)
                 {
                     SqlProvider.UpdateComponent(dlg.Component);
-                    model?.Refresh(dlg.Component);
+                    model.Refresh(dlg.Component);
                 }
             }
+        }
+
+        private Fabrication ShowFabricationDialog(Fabrication fabrication)
+        {
+            bool isEditing = fabrication != null;
+            Fabrication originalFabrication = fabrication;
+
+            // Instantiate the dialog box
+            var dlg = new FabricationDialog(isEditing ? (Fabrication)fabrication.Clone() : null)
+            {
+                Owner = this
+            };
+
+            // Open the dialog box modally
+            if (dlg.ShowDialog() is true)
+            {
+                bool hasChanges = originalFabrication == null ||
+                    dlg.Fabrication.ProductId != originalFabrication.ProductId ||
+                    dlg.Fabrication.ProductName != originalFabrication.ProductName ||
+                    dlg.Fabrication.Client != originalFabrication.Client ||
+                    dlg.Fabrication.Details != originalFabrication.Details ||
+                    dlg.Fabrication.Status != originalFabrication.Status ||
+                    dlg.Fabrication.ExpectedDate != originalFabrication.ExpectedDate;
+
+                if (hasChanges)
+                    return dlg.Fabrication;
+            }
+
+            return null;
         }
 
         private void ComponentsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                ShowDialog(ComponentsDataGrid, Model?.ComponentViewModel);
+                ShowComponentDialog(ComponentsDataGrid, Model.ComponentViewModel);
                 e.Handled = true;
             }
         }
@@ -85,9 +114,14 @@ namespace Warehouse
         {
             if (e.Key == Key.Enter)
             {
-                ShowDialog(ProductComponentsDataGrid, Model?.ProductComponentViewModel);
+                ShowComponentDialog(ProductComponentsDataGrid, Model.ProductComponentViewModel);
                 e.Handled = true;
             }
+        }
+
+        private void FabricationsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            SortColumn(FabricationsDataGrid, e);
         }
 
         private void ComponentsDataGrid_Sorting(object sender, DataGridSortingEventArgs e)
@@ -107,7 +141,9 @@ namespace Warehouse
             // custom sort for column
             if (column.SortMemberPath == "ExpectedDate" ||
                 column.SortMemberPath == "Ordered" ||
-                column.SortMemberPath == "Price")
+                column.SortMemberPath == "Price" ||
+                column.SortMemberPath == "StartedDate" ||
+                column.SortMemberPath == "ClosedDate")
             {
                 // Prevent auto sorting
                 e.Handled = true;
@@ -129,6 +165,8 @@ namespace Warehouse
             switch (sortMemberPath)
             {
                 case "ExpectedDate":
+                case "StartedDate":
+                case "ClosedDate":
                     return new DateComparer(direction);
                 case "Ordered":
                     return new OrderedComparer(direction);
@@ -141,12 +179,12 @@ namespace Warehouse
 
         private void ComponentTab_Selected(object sender, RoutedEventArgs e)
         {
-            Model?.ComponentViewModel.Update();
+            Model.ComponentViewModel.Update();
         }
 
         private void ProductTab_Selected(object sender, RoutedEventArgs e)
         {
-            Model?.ProductComponentViewModel.Update();
+            Model.ProductComponentViewModel.Update();
         }
 
         private void FabricationTab_Selected(object sender, RoutedEventArgs e)
@@ -154,19 +192,72 @@ namespace Warehouse
             Model.FabricationViewModel.Update();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void NewFabricationButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var fabrication = ShowFabricationDialog(null);
+            if (fabrication != null)
+            {
+                fabrication.StartedDate = DateTime.Now.Date;
+                SqlProvider.InsertFabrication(fabrication);
+                SqlProvider.AddProductAmountsInUse(fabrication.ProductId);
+                Model.FabricationViewModel.OnInsertNewFabrication(fabrication);
+            }
         }
 
         private void FabricationsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Key == Key.Enter)
+            {
+                var fabrication = Model.FabricationViewModel.CurrentFabrication;
+                if (fabrication != null)
+                {
+                    EditFabrication(fabrication);
+                    e.Handled = true;
+                }
+            }
         }
 
         private void FabricationsDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            var fabrication = Model.FabricationViewModel.CurrentFabrication;
+            if (fabrication != null)
+            {
+                EditFabrication(fabrication);
+                e.Handled = true;
+            }
+        }
 
+        private void EditFabrication(Fabrication fabrication)
+        {
+            var changedFabrication = ShowFabricationDialog(fabrication);
+            if (changedFabrication != null)
+            {
+                if (changedFabrication.Status != fabrication.Status)
+                {
+                    switch (changedFabrication.Status)
+                    {
+                        case FabricationStatus.Closed:
+                            changedFabrication.ClosedDate = DateTime.Now.Date;
+                            SqlProvider.UpdateFabrication(changedFabrication);
+                            SqlProvider.SubtractProductAmounts(changedFabrication.ProductId);
+                            SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
+                            Model.FabricationViewModel.Update();
+                            break;
+                        case FabricationStatus.Cancelled:
+                            changedFabrication.ClosedDate = DateTime.Now.Date;
+                            SqlProvider.UpdateFabrication(changedFabrication);
+                            SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
+                            Model.FabricationViewModel.Update();
+                            break;
+                        default:
+                            throw new InvalidOperationException("Invalid FabricationStatus");
+                    }
+                }
+                else
+                {
+                    Model.FabricationViewModel.Refresh(changedFabrication);
+                }
+            }
         }
     }
 }

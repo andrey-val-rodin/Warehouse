@@ -46,8 +46,12 @@ namespace Warehouse.ViewModel
 
         public string[] ModeNames => _modeNames;
 
-        public override void Refresh<T>(T position)
+        public override void Refresh<T>(T fabrication)
         {
+            var f = fabrication as Fabrication;
+            var index = Fabrications.IndexOf(Fabrications.First(c => c.Id == f.Id));
+            Fabrications[index] = f;
+            CurrentFabrication = f;
         }
 
         public override void Update()
@@ -57,6 +61,22 @@ namespace Warehouse.ViewModel
                     ? SqlProvider.GetOpenedFabrications()
                     : SqlProvider.GetHistoricalFabrications());
             RaisePropertyChanged(nameof(Fabrications));
+        }
+
+        public void OnInsertNewFabrication(Fabrication fabrication)
+        {
+            if (CurrentModeIndex != 0)
+            {
+                // will call Update
+                CurrentModeIndex = 0;
+            }
+            else
+            {
+                Update();
+            }
+            var index = Fabrications.IndexOf(Fabrications.First(c => c.Id == fabrication.Id));
+            Fabrications[index] = fabrication;
+            CurrentFabrication = fabrication;
         }
     }
 }

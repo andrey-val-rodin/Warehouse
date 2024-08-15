@@ -16,5 +16,7 @@ namespace Warehouse.Database
         void SubtractProductAmounts(int productId);
         IEnumerable<Fabrication> GetOpenedFabrications();
         IEnumerable<Fabrication> GetHistoricalFabrications();
+        void InsertFabrication(Fabrication fabrication);
+        void UpdateFabrication(Fabrication fabrication);
     }
 }

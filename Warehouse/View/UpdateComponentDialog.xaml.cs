@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -30,6 +29,7 @@ namespace Warehouse.View
                     value.ExpectedDate = null;
 
                 DataContext = value;
+                ComponentDateValidationRule.Component = value;
             }
         }
 
@@ -41,6 +41,9 @@ namespace Warehouse.View
 
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
+            // Fire validation rule
+            datePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
+
             // Don't accept the dialog box if there is invalid data
             if (!IsValid(this))
                 return;
@@ -77,11 +80,6 @@ namespace Warehouse.View
                 return false;
 
             // All dependency objects are valid
-            if (Component.Ordered != null && Component.ExpectedDate == null)
-            {
-                MessageBox.Show(this, "Пожалуйста, введите дату получения заказа", "Требуется дата");
-                return false;
-            }
 
             return true;
         }

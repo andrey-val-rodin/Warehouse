@@ -334,6 +334,71 @@ ORDER BY Fabrication.Id ASC";
             }
         }
 
+        public void InsertFabrication(Fabrication fabrication)
+        {
+            var query = @"
+INSERT INTO Fabrication (ProductId, Client, Details, TableId, Status, StartedDate, ExpectedDate, ClosedDate)
+VALUES
+(@productId, @client, @details, @tableId, @status, @startedDate, @expectedDate, @closedDate)
+RETURNING id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+            command.Parameters.Add(new SQLiteParameter("@productId", fabrication.ProductId));
+            command.Parameters.Add(new SQLiteParameter("@client", fabrication.Client));
+            command.Parameters.Add(new SQLiteParameter("@details", fabrication.Details));
+            command.Parameters.Add(new SQLiteParameter("@tableId", fabrication.TableId));
+            command.Parameters.Add(new SQLiteParameter("@status", fabrication.Status));
+            command.Parameters.Add(new SQLiteParameter("@startedDate",
+                fabrication.StartedDate.ToString("yyyy-MM-dd")));
+            command.Parameters.Add(new SQLiteParameter("@expectedDate", fabrication.ExpectedDate == null
+                ? null
+                : fabrication.ExpectedDate.Value.ToString("yyyy-MM-dd")));
+            command.Parameters.Add(new SQLiteParameter("@closedDate", fabrication.ClosedDate == null
+                ? null
+                : fabrication.ClosedDate.Value.ToString("yyyy-MM-dd")));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            var value = (long)command.ExecuteScalar();
+            int id = (int)value;
+            fabrication.Id = id;
+        }
+
+        public void UpdateFabrication(Fabrication fabrication)
+        {
+            var query = @"
+UPDATE Fabrication SET
+    ProductId = @productId,
+    Client = @client,
+    Details = @details,
+    TableId = @tableId,
+    Status = @status,
+    StartedDate = @startedDate,
+    ExpectedDate = @expectedDate,
+    ClosedDate = @closedDate
+WHERE Id=@id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+            command.Parameters.Add(new SQLiteParameter("@id", fabrication.Id));
+            command.Parameters.Add(new SQLiteParameter("@productId", fabrication.ProductId));
+            command.Parameters.Add(new SQLiteParameter("@client", fabrication.Client));
+            command.Parameters.Add(new SQLiteParameter("@details", fabrication.Details));
+            command.Parameters.Add(new SQLiteParameter("@tableId", fabrication.TableId));
+            command.Parameters.Add(new SQLiteParameter("@status", fabrication.Status));
+            command.Parameters.Add(new SQLiteParameter("@startedDate",
+                fabrication.StartedDate.ToString("yyyy-MM-dd")));
+            command.Parameters.Add(new SQLiteParameter("@expectedDate", fabrication.ExpectedDate == null
+                ? null
+                : fabrication.ExpectedDate.Value.ToString("yyyy-MM-dd")));
+            command.Parameters.Add(new SQLiteParameter("@closedDate", fabrication.ClosedDate == null
+                ? null
+                : fabrication.ClosedDate.Value.ToString("yyyy-MM-dd")));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            command.ExecuteNonQuery();
+        }
+
 #if DEBUG
         private static void WriteParameters(SQLiteCommand command)
         {

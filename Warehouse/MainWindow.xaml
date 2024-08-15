@@ -48,18 +48,19 @@
                                 Margin="12,0,0,0"
                                 Height="22"
                                 Width="130"
-                                Click="Button_Click"/>
+                                Click="NewFabricationButton_Click"/>
                     </StackPanel>
                     <DataGrid x:Name="FabricationsDataGrid"
                               Style="{DynamicResource dataGridStyle}"
                               ItemsSource="{Binding Path=Fabrications, Mode=OneWay}"
                               IsReadOnly="True"
                               IsSynchronizedWithCurrentItem="True"
-                              SelectedItem="CurrentFabrication"
+                              SelectedItem="{Binding CurrentFabrication}"
                               SelectionMode="Single"
                               GridLinesVisibility="Vertical"
                               AutoGenerateColumns="False"
                               Margin="0,6,0,0"
+                              Sorting="FabricationsDataGrid_Sorting"
                               PreviewKeyDown="FabricationsDataGrid_PreviewKeyDown">
                         <DataGrid.Resources>
                             <Style TargetType="DataGridRow">
@@ -89,7 +90,7 @@
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Id стола" Binding="{Binding TableId}"/>
                             <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
                             <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>

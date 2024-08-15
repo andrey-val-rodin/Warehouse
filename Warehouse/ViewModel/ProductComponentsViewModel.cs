@@ -46,7 +46,7 @@ namespace Warehouse.ViewModel
 
         public ObservableCollection<ProductComponent> ProductComponents => _productComponents;
 
-        public string[] ProductNames => SqlProvider.GetProductNames();
+        public string[] ProductNames { get; } = SqlProvider.GetProductNames();
 
         public override void Refresh<T>(T component)
         {
