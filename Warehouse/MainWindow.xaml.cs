@@ -126,7 +126,7 @@ namespace Warehouse
 
         private IComparer CreateComparer(string sortMemberPath, ListSortDirection direction)
         {
-            switch(sortMemberPath)
+            switch (sortMemberPath)
             {
                 case "ExpectedDate":
                     return new DateComparer(direction);

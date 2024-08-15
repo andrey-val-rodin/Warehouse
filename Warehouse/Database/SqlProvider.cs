@@ -90,11 +90,11 @@ FROM Component");
 
             return ds.Tables[0].DefaultView;
         }
-        
+
         public IEnumerable<Component> GetComponents(int typeId)
         {
             DataView components = GetComponentsDataView(typeId);
-            foreach(DataRow row in components.Table.Rows)
+            foreach (DataRow row in components.Table.Rows)
             {
                 yield return Component.FromDataRow(row);
             }
