@@ -65,8 +65,8 @@
                         <DataGrid.Resources>
                             <Style TargetType="DataGridRow">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="2">
-                                        <Setter Property="Background" Value="#EBDB55"/>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
+                                        <Setter Property="Background" Value="Orange"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

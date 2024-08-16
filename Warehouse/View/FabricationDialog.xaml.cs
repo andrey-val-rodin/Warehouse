@@ -19,6 +19,9 @@ namespace Warehouse.View
         {
             InitializeComponent();
 
+            datePicker.DisplayDateStart = DateTime.Now;
+            datePicker.DisplayDateEnd = datePicker.DisplayDateStart + TimeSpan.FromDays(180);
+
             if (fabrication == null)
             {
                 _isCreating = true;

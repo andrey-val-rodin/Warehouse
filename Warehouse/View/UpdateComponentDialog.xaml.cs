@@ -116,5 +116,11 @@ namespace Warehouse.View
                 price.Text = newText;
             }
         }
+
+        private void OrderedTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Fire validation rule
+            datePicker.GetBindingExpression(DatePicker.SelectedDateProperty).UpdateSource();
+        }
     }
 }

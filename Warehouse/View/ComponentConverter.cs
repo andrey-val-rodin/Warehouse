@@ -12,12 +12,12 @@ namespace Warehouse.View
         {
             if (value is ProductComponent pc)
             {
-                // level 1 - insufficient amount
-                if (pc.Remainder < pc.Required)
+                // level 1 - overdue order
+                if (pc.ExpectedDate != null && DateTime.Now > pc.ExpectedDate)
                     return 1;
 
-                // level 2 - overdue order
-                if (pc.ExpectedDate != null && DateTime.Now > pc.ExpectedDate)
+                // level 2 - insufficient amount
+                if (pc.Remainder < pc.Required)
                     return 2;
 
                 // level 3 - no price
@@ -26,12 +26,12 @@ namespace Warehouse.View
             }
             else if (value is Component c)
             {
-                // level 1 - insufficient amount
-                if (c.Remainder < 1)
+                // level 1 - overdue order
+                if (c.ExpectedDate != null && DateTime.Now > c.ExpectedDate)
                     return 1;
 
-                // level 2 - overdue order
-                if (c.ExpectedDate != null && DateTime.Now > c.ExpectedDate)
+                // level 2 - insufficient amount
+                if (c.Remainder < 1)
                     return 2;
 
                 // level 3 - no price

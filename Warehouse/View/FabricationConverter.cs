@@ -12,12 +12,12 @@ namespace Warehouse.View
         {
             if (value is Fabrication f)
             {
-                // level 1 - insufficient amount
-                // not implemented
-
-                // level 2 - overdue order
+                // level 1 - overdue order
                 if (f.ExpectedDate != null && DateTime.Now > f.ExpectedDate)
-                    return 2;
+                    return 1;
+
+                // level 2 - insufficient amount
+                // not implemented
 
                 // level 3 - no price
                 // not applicable

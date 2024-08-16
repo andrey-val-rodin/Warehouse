@@ -115,7 +115,8 @@
         <ToolBarPanel Grid.Column="1" Grid.Row="2"
                       Orientation="Horizontal">
             <TextBox VerticalContentAlignment="Center"
-                     Width="170">
+                     Width="170"
+                     TextChanged="OrderedTextBox_TextChanged">
                 <TextBox.Text>
                     <Binding Path="Ordered" UpdateSourceTrigger="PropertyChanged">
                         <Binding.Converter>
