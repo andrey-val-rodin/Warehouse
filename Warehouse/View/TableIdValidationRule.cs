@@ -28,7 +28,7 @@ namespace Warehouse.View
     */
     public class TableIdValidationRule : ValidationRule
     {
-        static int[] BluetoothTables = [1, 2, 5, 6, 9, 10, 13, 14, 17, 18];
+        public static int[] BluetoothTables = [1, 2, 5, 6, 9, 10, 13, 14, 17, 18];
         static public Fabrication Fabrication { get; set; }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)

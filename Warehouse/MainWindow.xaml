@@ -91,7 +91,6 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
                             <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Id стола" Binding="{Binding TableId}"/>
                             <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
                             <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
                             <DataGridTextColumn Header="Закрыто" Binding="{Binding ClosedDate, StringFormat=dd.MM.yyyy}"/>

@@ -275,6 +275,7 @@ SELECT
     Fabrication.Client,
     Fabrication.Details,
     Fabrication.Status,
+    Fabrication.TableId,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
     Fabrication.ClosedDate
@@ -301,6 +302,7 @@ SELECT
     Fabrication.Client,
     Fabrication.Details,
     Fabrication.Status,
+    Fabrication.TableId,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
     Fabrication.ClosedDate

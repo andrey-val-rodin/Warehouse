@@ -90,6 +90,7 @@ namespace Warehouse
                     dlg.Fabrication.ProductId != originalFabrication.ProductId ||
                     dlg.Fabrication.ProductName != originalFabrication.ProductName ||
                     dlg.Fabrication.Client != originalFabrication.Client ||
+                    dlg.Fabrication.TableId != originalFabrication.TableId ||
                     dlg.Fabrication.Details != originalFabrication.Details ||
                     dlg.Fabrication.Status != originalFabrication.Status ||
                     dlg.Fabrication.ExpectedDate != originalFabrication.ExpectedDate;
@@ -255,6 +256,7 @@ namespace Warehouse
                 }
                 else
                 {
+                    SqlProvider.UpdateFabrication(changedFabrication);
                     Model.FabricationViewModel.Refresh(changedFabrication);
                 }
             }

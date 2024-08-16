@@ -103,7 +103,15 @@ namespace Warehouse.View
                 tableIdLabel.IsEnabled = false;
                 tableIdTextBox.IsEnabled = false;
             }
+            else
+            {
+                var isBluetoothTable = IsBluetoothTable();
+                tableIdLabel.IsEnabled = isBluetoothTable;
+                tableIdTextBox.IsEnabled = isBluetoothTable;
+            }
         }
+
+        private bool IsBluetoothTable() => TableIdValidationRule.BluetoothTables.Contains(Fabrication.ProductId);
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -120,6 +128,10 @@ namespace Warehouse.View
             if (!IsValid(this))
                 return;
 
+            // Validate TableId
+            if (!IsBluetoothTable())
+                Fabrication.TableId = null;
+
             if (IsEditing)
             {
                 if (Fabrication.Status != _originalStatus)
@@ -127,12 +139,12 @@ namespace Warehouse.View
                     switch (Fabrication.Status)
                     {
                         case FabricationStatus.Closed:
-                            if (MessageBox.Show("Поля 'Наличие' и 'Остаток' будут уменьшены для всех используемых компонентов.\n\nПродолжить?",
+                            if (MessageBox.Show("Все использованные компоненты будут вычтены из поля 'Наличие'.\n\nПродолжить?",
                                 "Закрытие производства", MessageBoxButton.YesNo) == MessageBoxResult.No)
                                 return;
                             break;
                         case FabricationStatus.Cancelled:
-                            if (MessageBox.Show("Поле 'Остаток' будет увеличено для всех используемых компонентов.\n\nПродолжить?",
+                            if (MessageBox.Show("Все используемые компоненты будут возвращены.\n\nПродолжить?",
                                 "Отмена производства", MessageBoxButton.YesNo) == MessageBoxResult.No)
                                 return;
                             break;
@@ -176,6 +188,7 @@ namespace Warehouse.View
         {
             Fabrication.ProductId = productComboBox.SelectedIndex + 1;
             Fabrication.ProductName = productComboBox.SelectedItem as string;
+            PrepareTableId();
         }
 
         private void StatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -11,7 +11,7 @@ namespace Warehouse.View
                 return new ValidationResult(false, "Внутренняя ошибка преобразования.");
 
             if (string.IsNullOrEmpty(input))
-                return new ValidationResult(true, "");
+                return new ValidationResult(true, null);
 
             // Is a number?
             var style = NumberStyles.Number;
@@ -33,7 +33,7 @@ namespace Warehouse.View
             }
 
             // Number is valid
-            return new ValidationResult(true, "");
+            return new ValidationResult(true, null);
         }
     }
 }
