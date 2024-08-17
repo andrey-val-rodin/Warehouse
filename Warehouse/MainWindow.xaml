@@ -22,7 +22,7 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
         </TabControl.Resources>
-        
+
         <TabItem x:Name="FabricationTab"
                  DataContext="{Binding FabricationViewModel}"
                  Selector.Selected="FabricationTab_Selected">
@@ -50,56 +50,133 @@
                                 Width="130"
                                 Click="NewFabricationButton_Click"/>
                     </StackPanel>
-                    <DataGrid x:Name="FabricationsDataGrid"
-                              Style="{DynamicResource dataGridStyle}"
-                              ItemsSource="{Binding Path=Fabrications, Mode=OneWay}"
-                              IsReadOnly="True"
-                              IsSynchronizedWithCurrentItem="True"
-                              SelectedItem="{Binding CurrentFabrication}"
-                              SelectionMode="Single"
-                              GridLinesVisibility="Vertical"
-                              AutoGenerateColumns="False"
-                              Margin="0,6,0,0"
-                              Sorting="FabricationsDataGrid_Sorting"
-                              PreviewKeyDown="FabricationsDataGrid_PreviewKeyDown">
-                        <DataGrid.Resources>
-                            <Style TargetType="DataGridRow">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
-                                        <Setter Property="Background" Value="Orange"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                            <Style TargetType="DataGridCell">
-                                <Style.Setters>
-                                    <EventSetter Event="MouseDoubleClick"
+                    <Grid>
+                        <DataGrid x:Name="FabricationsDataGrid"
+                                  Visibility="{Binding ActiveFabricationsVisibility}"
+                                  Style="{DynamicResource dataGridStyle}"
+                                  ItemsSource="{Binding Path=Fabrications, Mode=OneWay}"
+                                  IsReadOnly="True"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  SelectedItem="{Binding CurrentFabrication}"
+                                  SelectionMode="Single"
+                                  GridLinesVisibility="Vertical"
+                                  AutoGenerateColumns="False"
+                                  Margin="0,6,0,0"
+                                  Sorting="FabricationsDataGrid_Sorting"
+                                  PreviewKeyDown="FabricationsDataGrid_PreviewKeyDown">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
+                                            <Setter Property="Background" Value="Orange"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Setters>
+                                        <EventSetter Event="MouseDoubleClick"
                                                  Handler="FabricationsDataGridCell_MouseDoubleClick"/>
-                                    <Setter Property="TextBlock.TextAlignment" Value="Right"/>
-                                    <Setter Property="Background" Value="White"/>
-                                    <Setter Property="Foreground" Value="Black"/>
-                                    <Setter Property="BorderBrush" Value="White"/>
-                                </Style.Setters>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#0078D7" />
-                                        <Setter Property="Foreground" Value="White" />
-                                        <Setter Property="BorderBrush" Value="#0078D7"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DataGrid.Resources>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}" ElementStyle="{StaticResource leftAlign}"/>
-                            <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
-                            <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
-                            <DataGridTextColumn Header="Закрыто" Binding="{Binding ClosedDate, StringFormat=dd.MM.yyyy}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                                        <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#0078D7" />
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="BorderBrush" Value="#0078D7"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding Number}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
+                                <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <DataGrid x:Name="HistoricalFabricationsDataGrid"
+                                  Visibility="{Binding HistoricalFabricationsVisibility}"
+                                  Style="{DynamicResource dataGridStyle}"
+                                  ItemsSource="{Binding Path=Fabrications, Mode=OneWay}"
+                                  IsReadOnly="True"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  SelectedItem="{Binding CurrentFabrication}"
+                                  SelectionMode="Single"
+                                  GridLinesVisibility="Vertical"
+                                  AutoGenerateColumns="False"
+                                  Margin="0,6,0,0"
+                                  Sorting="FabricationsDataGrid_Sorting"
+                                  PreviewKeyDown="FabricationsDataGrid_PreviewKeyDown">
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridRow">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
+                                            <Setter Property="Background" Value="Orange"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Setters>
+                                        <EventSetter Event="MouseDoubleClick"
+                                                 Handler="FabricationsDataGridCell_MouseDoubleClick"/>
+                                        <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#0078D7" />
+                                            <Setter Property="Foreground" Value="White" />
+                                            <Setter Property="BorderBrush" Value="#0078D7"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Номер" Binding="{Binding Number}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Статус" Binding="{Binding StatusText}" ElementStyle="{StaticResource leftAlign}"/>
+                                <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
+                                <DataGridTextColumn Header="Закрыто" Binding="{Binding ClosedDate, StringFormat=dd.MM.yyyy}"/>
+                                <DataGridTextColumn Header="Клиент"
+                                                    Binding="{Binding ClientPlainText, Mode=OneWay}"
+                                                    Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}"
+                                               BasedOn="{StaticResource {x:Type TextBlock}}">
+                                            <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                            <Setter Property="TextWrapping" Value="NoWrap" />
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                            <Setter Property="ToolTip" Value="{Binding Path=Client, Mode=OneWay}"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Заметки"
+                                                    Binding="{Binding DetailsPlainText, Mode=OneWay}"
+                                                    Width="*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}"
+                                               BasedOn="{StaticResource leftAlign}">
+                                            <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                            <Setter Property="TextWrapping" Value="NoWrap" />
+                                            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                            <Setter Property="ToolTip" Value="{Binding Path=Details, Mode=OneWay}"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
                 </DockPanel>
             </TabItem.Content>
         </TabItem>
-        
+
         <TabItem x:Name="ComponentTab"
                  DataContext="{Binding ComponentViewModel}"
                  Selector.Selected="ComponentTab_Selected">

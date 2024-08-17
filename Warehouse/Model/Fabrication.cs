@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace Warehouse.Model
 {
@@ -20,16 +21,6 @@ namespace Warehouse.Model
 
         public FabricationStatus Status { get; set; }
 
-        [DisplayName("Изделие")]
-        public string ProductName { get; set; }
-
-        [DisplayName("Клиент")]
-        [StringLength(10000)]
-        public string Client { get; set; }
-
-        [DisplayName("Заметки")]
-        [StringLength(10000)]
-        public string Details { get; set; }
         public string StatusText
         {
             get
@@ -47,6 +38,21 @@ namespace Warehouse.Model
                 }
             }
         }
+
+        [DisplayName("Изделие")]
+        public string ProductName { get; set; }
+
+        [DisplayName("Клиент")]
+        [StringLength(10000)]
+        public string Client { get; set; }
+
+        public string ClientPlainText => string.IsNullOrEmpty(Client) ? null : Regex.Replace(Client, @"\t|\n|\r", "");
+
+        [DisplayName("Заметки")]
+        [StringLength(10000)]
+        public string Details { get; set; }
+
+        public string DetailsPlainText => string.IsNullOrEmpty(Details) ? null : Regex.Replace(Details, @"\t|\n|\r", "");
 
         [DisplayName("Открыто")]
         public DateTime StartedDate { get; set; }

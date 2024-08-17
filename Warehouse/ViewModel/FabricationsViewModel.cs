@@ -29,9 +29,17 @@ namespace Warehouse.ViewModel
                 if (SetProperty(ref _currentModeIndex, value))
                 {
                     Update();
+                    RaisePropertyChanged(nameof(ActiveFabricationsVisibility));
+                    RaisePropertyChanged(nameof(HistoricalFabricationsVisibility));
                 }
             }
         }
+
+        public bool IsActiveFabrications => CurrentModeIndex == 0;
+        public bool IsHistoricalFabrications => CurrentModeIndex == 1;
+
+        public Visibility ActiveFabricationsVisibility => IsActiveFabrications ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility HistoricalFabricationsVisibility => IsHistoricalFabrications ? Visibility.Visible : Visibility.Collapsed;
 
         public Fabrication CurrentFabrication
         {
@@ -57,7 +65,7 @@ namespace Warehouse.ViewModel
         public override void Update()
         {
             _fabrications = new ObservableCollection<Fabrication>(
-                CurrentModeIndex == 0
+                IsActiveFabrications
                     ? SqlProvider.GetOpenedFabrications()
                     : SqlProvider.GetHistoricalFabrications());
             RaisePropertyChanged(nameof(Fabrications));
@@ -65,7 +73,7 @@ namespace Warehouse.ViewModel
 
         public void OnInsertNewFabrication(Fabrication fabrication)
         {
-            if (CurrentModeIndex != 0)
+            if (IsHistoricalFabrications)
             {
                 // will call Update
                 CurrentModeIndex = 0;

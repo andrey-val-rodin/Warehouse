@@ -157,6 +157,9 @@ namespace Warehouse.View
             }
 
             // Dialog box accepted
+            if (string.IsNullOrWhiteSpace(Fabrication.Client)) Fabrication.Client = null;
+            if (string.IsNullOrWhiteSpace(Fabrication.Details)) Fabrication.Details = null;
+
             DialogResult = true;
         }
 
