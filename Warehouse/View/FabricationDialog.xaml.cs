@@ -28,6 +28,7 @@ namespace Warehouse.View
                 fabrication = new Fabrication();
                 // First selection in ProductComboBox
                 fabrication.ProductId = 1;
+                fabrication.Number = SqlProvider.GetMaxFabricationNumber() + 1;
             }
 
             _originalStatus = fabrication.Status;

@@ -14,6 +14,7 @@ namespace Warehouse.Database
         void AddProductAmountsInUse(int productId);
         void SubtractProductAmountsInUse(int productId);
         void SubtractProductAmounts(int productId);
+        int GetMaxFabricationNumber();
         IEnumerable<Fabrication> GetOpenedFabrications();
         IEnumerable<Fabrication> GetHistoricalFabrications();
         void InsertFabrication(Fabrication fabrication);

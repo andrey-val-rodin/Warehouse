@@ -74,7 +74,7 @@
             <TextBox.Text>
                 <Binding Path="Amount" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
-                        <local:AmountValidationRule />
+                        <local:PositiveNumberValidationRule />
                     </Binding.ValidationRules>
                 </Binding>
             </TextBox.Text>

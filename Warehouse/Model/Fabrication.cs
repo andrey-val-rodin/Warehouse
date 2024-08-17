@@ -12,6 +12,14 @@ namespace Warehouse.Model
 
         public int ProductId { get; set; }
 
+        [DisplayName("id стола")]
+        [StringLength(12)]
+        public string TableId { get; set; }
+
+        public int Number { get; set; }
+
+        public FabricationStatus Status { get; set; }
+
         [DisplayName("Изделие")]
         public string ProductName { get; set; }
 
@@ -22,12 +30,6 @@ namespace Warehouse.Model
         [DisplayName("Заметки")]
         [StringLength(10000)]
         public string Details { get; set; }
-
-        [DisplayName("id стола")]
-        [StringLength(12)]
-        public string TableId { get; set; }
-
-        public FabricationStatus Status { get; set; }
         public string StatusText
         {
             get

@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace Warehouse.View
 {
-    public class AmountValidationRule : ValidationRule
+    public class PositiveNumberValidationRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -13,7 +13,7 @@ namespace Warehouse.View
 
             // Is positive?
             if (number < 0)
-                return new ValidationResult(false, "Количество не может быть отрицательным.");
+                return new ValidationResult(false, "Число не может быть отрицательным.");
 
             // Number is valid
             return new ValidationResult(true, null);

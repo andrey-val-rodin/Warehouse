@@ -264,6 +264,22 @@ WHERE EXISTS (SELECT pc.Amount
             command.ExecuteNonQuery();
         }
 
+        public int GetMaxFabricationNumber()
+        {
+            var query = @"
+SELECT MAX(Number) AS MaxNumber
+FROM Fabrication";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+            return result;
+        }
+
         private DataView GetOpenedFabricationsDataView()
         {
             var ds = new DataSet("Fabrications");
@@ -276,6 +292,7 @@ SELECT
     Fabrication.Details,
     Fabrication.Status,
     Fabrication.TableId,
+    Fabrication.Number,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
     Fabrication.ClosedDate
@@ -303,6 +320,7 @@ SELECT
     Fabrication.Details,
     Fabrication.Status,
     Fabrication.TableId,
+    Fabrication.Number,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
     Fabrication.ClosedDate
@@ -339,9 +357,9 @@ ORDER BY Fabrication.Id ASC";
         public void InsertFabrication(Fabrication fabrication)
         {
             var query = @"
-INSERT INTO Fabrication (ProductId, Client, Details, TableId, Status, StartedDate, ExpectedDate, ClosedDate)
+INSERT INTO Fabrication (ProductId, Client, Details, TableId, Number, Status, StartedDate, ExpectedDate, ClosedDate)
 VALUES
-(@productId, @client, @details, @tableId, @status, @startedDate, @expectedDate, @closedDate)
+(@productId, @client, @details, @tableId, @number, @status, @startedDate, @expectedDate, @closedDate)
 RETURNING id";
             using var command = new SQLiteCommand(query, _connection);
             System.Diagnostics.Debug.WriteLine(query);
@@ -349,6 +367,7 @@ RETURNING id";
             command.Parameters.Add(new SQLiteParameter("@client", fabrication.Client));
             command.Parameters.Add(new SQLiteParameter("@details", fabrication.Details));
             command.Parameters.Add(new SQLiteParameter("@tableId", fabrication.TableId));
+            command.Parameters.Add(new SQLiteParameter("@number", fabrication.Number));
             command.Parameters.Add(new SQLiteParameter("@status", fabrication.Status));
             command.Parameters.Add(new SQLiteParameter("@startedDate",
                 fabrication.StartedDate.ToString("yyyy-MM-dd")));
@@ -374,6 +393,7 @@ UPDATE Fabrication SET
     Client = @client,
     Details = @details,
     TableId = @tableId,
+    Number = @number,
     Status = @status,
     StartedDate = @startedDate,
     ExpectedDate = @expectedDate,
@@ -386,6 +406,7 @@ WHERE Id=@id";
             command.Parameters.Add(new SQLiteParameter("@client", fabrication.Client));
             command.Parameters.Add(new SQLiteParameter("@details", fabrication.Details));
             command.Parameters.Add(new SQLiteParameter("@tableId", fabrication.TableId));
+            command.Parameters.Add(new SQLiteParameter("@number", fabrication.Number));
             command.Parameters.Add(new SQLiteParameter("@status", fabrication.Status));
             command.Parameters.Add(new SQLiteParameter("@startedDate",
                 fabrication.StartedDate.ToString("yyyy-MM-dd")));

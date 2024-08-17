@@ -69,11 +69,12 @@ CREATE TABLE Fabrication (
     Id              INTEGER PRIMARY KEY AUTOINCREMENT
                             NOT NULL,
     ProductId       INTEGER REFERENCES Product (id),
-    Client          TEXT,
-    Details         TEXT,
     TableId         TEXT,
+    Number          INTEGER,
     Status          INTEGER NOT NULL
                             DEFAULT (0),
+    Client          TEXT,
+    Details         TEXT,
     StartedDate     TEXT    NOT NULL
                             DEFAULT (DATE('now', 'localtime') ),
     ExpectedDate    TEXT,
