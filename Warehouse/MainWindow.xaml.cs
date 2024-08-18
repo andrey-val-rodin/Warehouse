@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Warehouse.Database;
 using Warehouse.Model;
+using Warehouse.Tools;
 using Warehouse.View;
 using Warehouse.ViewModel;
 using ListSortDirection = System.ComponentModel.ListSortDirection;
@@ -26,6 +27,7 @@ namespace Warehouse
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
+        private static Sender Sender { get; } = new Sender();
         private MainViewModel Model => DataContext as MainViewModel;
 
         private void ComponentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -208,6 +210,7 @@ namespace Warehouse
                 SqlProvider.InsertFabrication(fabrication);
                 SqlProvider.AddProductAmountsInUse(fabrication.ProductId);
                 Model.FabricationViewModel.OnInsertNewFabrication(fabrication);
+                Task.Run(async () => await Sender.PostInfoAsync(fabrication));
             }
         }
 
@@ -249,12 +252,14 @@ namespace Warehouse
                             SqlProvider.SubtractProductAmounts(changedFabrication.ProductId);
                             SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
                             Model.FabricationViewModel.Update();
+                            Task.Run(async () => await Sender.PostInfoAsync(changedFabrication));
                             break;
                         case FabricationStatus.Cancelled:
                             changedFabrication.ClosedDate = DateTime.Now.Date;
                             SqlProvider.UpdateFabrication(changedFabrication);
                             SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
                             Model.FabricationViewModel.Update();
+                            Task.Run(async () => await Sender.PostInfoAsync(changedFabrication));
                             break;
                         default:
                             throw new InvalidOperationException("Invalid FabricationStatus");
