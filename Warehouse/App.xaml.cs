@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using Warehouse.Database;
+using Warehouse.Tools;
 
 namespace Warehouse
 {
@@ -22,9 +23,10 @@ namespace Warehouse
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ISqlProvider>(new SqlProvider());
+            services.AddSingleton(new GoogleSheetsProvider());
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -39,6 +41,9 @@ namespace Warehouse
             var sqlProvider = ServiceProvider.GetService<ISqlProvider>();
             if (!sqlProvider.Connect(path))
                 Current.Shutdown();
+
+            var provider = ServiceProvider.GetService<GoogleSheetsProvider>();
+            await provider.AuthorizeAsync();
         }
     }
 }
