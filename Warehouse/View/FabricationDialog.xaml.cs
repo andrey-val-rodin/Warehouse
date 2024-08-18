@@ -12,6 +12,7 @@ namespace Warehouse.View
     /// </summary>
     public partial class FabricationDialog : Window
     {
+        private readonly bool _isReadonly;
         private readonly bool _isCreating;
         private readonly FabricationStatus _originalStatus;
 
@@ -33,10 +34,14 @@ namespace Warehouse.View
 
             _originalStatus = fabrication.Status;
             Fabrication = fabrication;
+            _isReadonly = Fabrication.Status != FabricationStatus.Opened;
 
             PrepareProducts();
             PrepareStatuses();
             PrepareTableId();
+
+            if (_isReadonly)
+                DisableAll();
         }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
@@ -52,8 +57,10 @@ namespace Warehouse.View
             }
         }
 
+        public bool IsReadonly => _isReadonly;
         public bool IsCreating => _isCreating;
         public bool IsEditing => !_isCreating;
+        private bool IsBluetoothTable() => TableIdValidationRule.BluetoothTables.Contains(Fabrication.ProductId);
 
         private void PrepareProducts()
         {
@@ -101,21 +108,20 @@ namespace Warehouse.View
 
         private void PrepareTableId()
         {
-            if (Fabrication.Status == FabricationStatus.Closed ||
-                Fabrication.Status == FabricationStatus.Cancelled)
-            {
-                tableIdLabel.IsEnabled = false;
-                tableIdTextBox.IsEnabled = false;
-            }
-            else
-            {
-                var isBluetoothTable = IsBluetoothTable();
-                tableIdLabel.IsEnabled = isBluetoothTable;
-                tableIdTextBox.IsEnabled = isBluetoothTable;
-            }
+            var isBluetoothTable = IsBluetoothTable();
+            tableIdTextBox.IsEnabled = isBluetoothTable;
         }
 
-        private bool IsBluetoothTable() => TableIdValidationRule.BluetoothTables.Contains(Fabrication.ProductId);
+        private void DisableAll()
+        {
+            productComboBox.IsEditable = false;
+            statusComboBox.IsEnabled = false;
+            datePicker.IsEnabled = false;
+            numberTextBox.IsReadOnly = true;
+            tableIdTextBox.IsReadOnly = true;
+            clientTextBox.IsReadOnly = true;
+            detailsTextBox.IsReadOnly = true;
+        }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -157,8 +163,14 @@ namespace Warehouse.View
             }
 
             // Dialog box accepted
-            if (string.IsNullOrWhiteSpace(Fabrication.Client)) Fabrication.Client = null;
-            if (string.IsNullOrWhiteSpace(Fabrication.Details)) Fabrication.Details = null;
+            if (!IsReadonly)
+            {
+                // Validate Client and Details
+                if (string.IsNullOrWhiteSpace(Fabrication.Client))
+                    Fabrication.Client = null;
+                if (string.IsNullOrWhiteSpace(Fabrication.Details))
+                    Fabrication.Details = null;
+            }
 
             DialogResult = true;
         }

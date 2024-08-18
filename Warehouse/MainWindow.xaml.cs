@@ -80,6 +80,7 @@ namespace Warehouse
             // Instantiate the dialog box
             var dlg = new FabricationDialog(isEditing ? (Fabrication)fabrication.Clone() : null)
             {
+                Title = isEditing ? "Производство" : "Новое производство",
                 Owner = this
             };
 
@@ -89,11 +90,16 @@ namespace Warehouse
                 bool hasChanges = originalFabrication == null ||
                     dlg.Fabrication.ProductId != originalFabrication.ProductId ||
                     dlg.Fabrication.ProductName != originalFabrication.ProductName ||
-                    dlg.Fabrication.Client != originalFabrication.Client ||
-                    dlg.Fabrication.TableId != originalFabrication.TableId ||
-                    dlg.Fabrication.Details != originalFabrication.Details ||
                     dlg.Fabrication.Status != originalFabrication.Status ||
+                    dlg.Fabrication.Number != originalFabrication.Number ||
+                    dlg.Fabrication.TableId != originalFabrication.TableId ||
+                    dlg.Fabrication.Client != originalFabrication.Client ||
+                    dlg.Fabrication.Details != originalFabrication.Details ||
                     dlg.Fabrication.ExpectedDate != originalFabrication.ExpectedDate;
+
+                // just to be sure...
+                if (dlg.IsReadonly)
+                    hasChanges = false;
 
                 if (hasChanges)
                     return dlg.Fabrication;
