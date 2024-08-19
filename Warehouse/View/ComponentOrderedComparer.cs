@@ -4,9 +4,9 @@ using ListSortDirection = System.ComponentModel.ListSortDirection;
 
 namespace Warehouse.View
 {
-    public class OrderedComparer(ListSortDirection sortDirection) : IComparer
+    public class ComponentOrderedComparer(ListSortDirection sortDirection) : IComparer
     {
-        public ListSortDirection SortDirection { get; set; } = sortDirection;
+        public ListSortDirection SortDirection { get; } = sortDirection;
 
         public int Compare(object x, object y)
         {

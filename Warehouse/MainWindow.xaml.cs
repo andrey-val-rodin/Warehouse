@@ -164,7 +164,7 @@ namespace Warehouse
                     : ListSortDirection.Descending;
 
                 // comparer
-                ListCollectionView lcv = (ListCollectionView)CollectionViewSource.GetDefaultView(source.ItemsSource);
+                var lcv = (ListCollectionView)CollectionViewSource.GetDefaultView(source.ItemsSource);
                 var comparer = CreateComparer(column.SortMemberPath, column.SortDirection.Value);
                 lcv.CustomSort = comparer;
             }
@@ -175,13 +175,16 @@ namespace Warehouse
             switch (sortMemberPath)
             {
                 case "ExpectedDate":
+                    return TabControl.SelectedItem == FabricationTab
+                        ? new FabricationDateComparer(direction, sortMemberPath)
+                        : new ComponentDateComparer(direction);
                 case "StartedDate":
                 case "ClosedDate":
-                    return new DateComparer(direction);
+                    return new FabricationDateComparer(direction, sortMemberPath);
                 case "Ordered":
-                    return new OrderedComparer(direction);
+                    return new ComponentOrderedComparer(direction);
                 case "Price":
-                    return new PriceComparer(direction);
+                    return new ComponentPriceComparer(direction);
                 default:
                     throw new InvalidOperationException("Unsupported sortMemberPath");
             }

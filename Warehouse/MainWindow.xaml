@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
         mc:Ignorable="d"
         Title="Склад" Height="700" Width="1000">
-    <TabControl>
+    <TabControl x:Name="TabControl">
         <TabControl.Resources>
             <Style x:Key="dataGridStyle" TargetType="{x:Type DataGrid}">
                 <Setter Property="ColumnHeaderStyle" Value="{DynamicResource columnHeaderStyle}"/>
