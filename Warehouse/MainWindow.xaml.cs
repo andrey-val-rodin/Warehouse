@@ -70,6 +70,7 @@ namespace Warehouse
                 {
                     SqlProvider.UpdateComponent(dlg.Component);
                     model.Refresh(dlg.Component);
+                    source.ScrollIntoView(dlg.Component);
                 }
             }
         }
@@ -269,6 +270,7 @@ namespace Warehouse
                 {
                     SqlProvider.UpdateFabrication(changedFabrication);
                     Model.FabricationViewModel.Refresh(changedFabrication);
+                    FabricationsDataGrid.ScrollIntoView(changedFabrication);
                 }
             }
         }
