@@ -204,6 +204,24 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             return result;
         }
 
+        public int GetMinProductRemainder(int productId)
+        {
+            var query = @"
+SELECT MIN(Component.Amount - Component.AmountInUse) AS MinRemainder
+FROM Component
+LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = 1
+";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+            return result;
+        }
+
         public void AddProductAmountsInUse(int productId)
         {
             var query = @"
