@@ -24,6 +24,7 @@
         </TabControl.Resources>
 
         <TabItem x:Name="FabricationTab"
+                 TabIndex="0"
                  DataContext="{Binding FabricationViewModel}"
                  Selector.Selected="FabricationTab_Selected">
             <TabItem.Header>
@@ -37,6 +38,7 @@
                                 Margin="0,0,0,-2"
                                 Height="26">
                         <ComboBox DockPanel.Dock="Top"
+                                  IsTabStop="False"
                                   SelectedIndex="{Binding CurrentModeIndex}"
                                   ItemsSource="{Binding ModeNames}"
                                   Width="190"
@@ -45,6 +47,7 @@
                                   FontWeight="Bold"
                                   HorizontalAlignment="Left"/>
                         <Button Content="Новое производство"
+                                IsTabStop="False"
                                 Margin="12,0,0,0"
                                 Height="22"
                                 Width="130"
@@ -179,6 +182,7 @@
         </TabItem>
 
         <TabItem x:Name="ComponentTab"
+                 TabIndex="1"
                  DataContext="{Binding ComponentViewModel}"
                  Selector.Selected="ComponentTab_Selected">
             <TabItem.Header>
@@ -188,6 +192,7 @@
                 <DockPanel Margin="4,8,4,2"
                            LastChildFill="True">
                     <ComboBox DockPanel.Dock="Top"
+                              IsTabStop="False"
                               SelectedIndex="{Binding CurrentType}"
                               ItemsSource="{Binding ComponentTypes}"
                               Margin="0,2,0,0"
@@ -256,6 +261,7 @@
         </TabItem>
 
         <TabItem x:Name="ProductTab"
+                 TabIndex="2"
                  DataContext="{Binding ProductComponentViewModel}"
                  Selector.Selected="ProductTab_Selected">
             <TabItem.Header>
@@ -268,6 +274,7 @@
                                 Orientation="Horizontal"
                                 Margin="0,0,0,-2">
                         <ComboBox DockPanel.Dock="Top"
+                                  IsTabStop="False"
                                   SelectedIndex="{Binding CurrentProductIndex}"
                                   ItemsSource="{Binding ProductNames}"
                                   Width="190"
