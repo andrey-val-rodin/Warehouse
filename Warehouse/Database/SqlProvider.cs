@@ -204,22 +204,32 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             return result;
         }
 
-        public int GetMinProductRemainder(int productId)
+        public bool HasNegativeRemainders(int productId)
         {
             var query = @"
-SELECT MIN(Component.Amount - Component.AmountInUse) AS MinRemainder
-FROM Component
-LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = 1
+SELECT Remainder FROM
+(
+	SELECT Component.Amount - Component.AmountInUse AS Remainder
+	FROM Component
+	LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @productId
+	ORDER BY Component.Amount - Component.AmountInUse
+	LIMIT 1
+)
 ";
             System.Diagnostics.Debug.WriteLine(query);
             var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@productId", productId));
+#if DEBUG
+            WriteParameters(command);
+#endif
             var value = command.ExecuteScalar();
             int result;
             if (value == null || value is DBNull)
                 result = 0;
             else
                 result = (int)(long)value;
-            return result;
+
+            return result < 0;
         }
 
         public void AddProductAmountsInUse(int productId)

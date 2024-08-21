@@ -70,8 +70,13 @@
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridRow">
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="2">
+                                            <Setter Property="Background" Value="#EBDB55"/>
+                                            <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
                                             <Setter Property="Background" Value="Orange"/>
+                                            <Setter Property="BorderBrush" Value="Orange"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -117,8 +122,13 @@
                             <DataGrid.Resources>
                                 <Style TargetType="DataGridRow">
                                     <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="2">
+                                            <Setter Property="Background" Value="#EBDB55"/>
+                                            <Setter Property="BorderBrush" Value="#EBDB55"/>
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=., Converter={x:Static view:FabricationConverter.Instance}}" Value="1">
                                             <Setter Property="Background" Value="Orange"/>
+                                            <Setter Property="BorderBrush" Value="Orange"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -217,6 +227,7 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="3">
                                         <Setter Property="Background" Value="#FFF9A6"/>
+                                        <Setter Property="BorderBrush" Value="#FFF9A6"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="2">
                                         <Setter Property="Background" Value="#EBDB55"/>
@@ -302,6 +313,7 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="3">
                                         <Setter Property="Background" Value="#FFF9A6"/>
+                                        <Setter Property="BorderBrush" Value="#FFF9A6"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="2">
                                         <Setter Property="Background" Value="#EBDB55"/>

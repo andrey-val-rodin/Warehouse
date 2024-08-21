@@ -105,6 +105,7 @@ namespace Warehouse.View
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             newAmount.Focus();
+            newAmount.SelectAll();
 
             if (Component.Price != null)
             {

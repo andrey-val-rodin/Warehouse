@@ -1,5 +1,8 @@
-﻿using System.Globalization;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
+using Warehouse.Database;
 using Warehouse.Model;
 
 namespace Warehouse.View
@@ -7,6 +10,8 @@ namespace Warehouse.View
     class FabricationConverter : IValueConverter
     {
         public static readonly IValueConverter Instance = new FabricationConverter();
+        private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
+        private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -17,13 +22,14 @@ namespace Warehouse.View
                     return 1;
 
                 // level 2 - insufficient amount
-                // not implemented
+                if (SqlProvider.HasNegativeRemainders(f.ProductId))
+                    return 2;
 
                 // level 3 - no price
                 // not applicable
             }
 
-            return false;
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -150,7 +150,7 @@ namespace Warehouse.View
                     {
                         case FabricationStatus.Closed:
                             // Check if there are negative remainders
-                            if (SqlProvider.GetMinProductRemainder(Fabrication.ProductId) < 0)
+                            if (SqlProvider.HasNegativeRemainders(Fabrication.ProductId))
                             {
                                 MessageBox.Show("Вы не можете закрыть производство, поскольку часть комплектующих имеет отрицательный остаток. Сначала исправьте текущее наличие этих комплектующих.",
                                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Exclamation);
