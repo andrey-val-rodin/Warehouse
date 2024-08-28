@@ -4,6 +4,7 @@ using Warehouse.Model;
 using Warehouse.Database;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using System.Globalization;
 
 namespace Warehouse.Tools
 {
@@ -39,7 +40,7 @@ namespace Warehouse.Tools
             var st = fabrication.StatusText;
             var n = fabrication.Number;
             var ti = fabrication.TableId;
-            var pp = SqlProvider.GetProductPrice(fabrication.ProductId);
+            var pp = SqlProvider.GetProductPrice(fabrication.ProductId).ToString("0.00", CultureInfo.InvariantCulture);
             var c = fabrication.Client;
             var d = fabrication.Details;
             var sd = fabrication.StartedDate.ToString("dd.MM.yyyy");

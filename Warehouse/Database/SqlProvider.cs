@@ -186,7 +186,7 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
         public decimal GetProductPrice(int productId)
         {
             var query = @"
-SELECT SUM(CAST(Component.Price AS REAL)/100) AS SumPrice
+SELECT SUM(ProductComponent.Amount * CAST(Component.Price AS REAL)/100) AS SumPrice
 FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @product";
             System.Diagnostics.Debug.WriteLine(query);
