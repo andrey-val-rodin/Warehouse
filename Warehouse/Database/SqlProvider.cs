@@ -232,6 +232,34 @@ SELECT Remainder FROM
             return result < 0;
         }
 
+        public bool HasNegativeAmountAfterClosingFabrication(int productId)
+        {
+            var query = @"
+SELECT NewAmount FROM
+(
+	SELECT Component.Amount - ProductComponent.Amount AS NewAmount
+	FROM Component
+	LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @productId
+	ORDER BY NewAmount
+	LIMIT 1
+)
+";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@productId", productId));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+
+            return result < 0;
+        }
+
         public void AddProductAmountsInUse(int productId)
         {
             var query = @"
