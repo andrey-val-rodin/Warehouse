@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using Warehouse.Database;
 using Warehouse.Model;
@@ -63,6 +64,18 @@ namespace Warehouse.ViewModel
                 SqlProvider.GetProductComponents(CurrentProductIndex + 1));
             RaisePropertyChanged(nameof(ProductComponents));
             RaisePropertyChanged(nameof(Price));
+        }
+
+        public override void Copy()
+        {
+            var text = new StringBuilder();
+            text.AppendLine(ProductComponent.GetHeader());
+            foreach (var component in ProductComponents)
+            {
+                text.AppendLine(component.ToString());
+            }
+
+            Clipboard.SetText(text.ToString());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using Warehouse.Database;
 using Warehouse.Model;
@@ -64,6 +65,18 @@ namespace Warehouse.ViewModel
         {
             _components = new ObservableCollection<Component>(SqlProvider.GetComponents(CurrentType));
             RaisePropertyChanged(nameof(Components));
+        }
+
+        public override void Copy()
+        {
+            var text = new StringBuilder();
+            text.AppendLine(Component.GetHeader());
+            foreach (var component in Components)
+            {
+                text.AppendLine(component.ToString());
+            }
+
+            Clipboard.SetText(text.ToString());
         }
     }
 }

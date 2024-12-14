@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Windows.Controls;
 using Warehouse.Model;
 using ListSortDirection = System.ComponentModel.ListSortDirection;
 

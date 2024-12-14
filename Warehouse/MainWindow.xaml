@@ -9,6 +9,17 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
         mc:Ignorable="d"
         Title="Склад" Height="700" Width="1000">
+    <Window.Resources>
+        <RoutedCommand x:Key="Copy"/>
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="C" Modifiers="Ctrl" Command="{StaticResource Copy}"/>
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource Copy}"
+                        Executed="Copy"/>
+    </Window.CommandBindings>
+
     <TabControl x:Name="TabControl">
         <TabControl.Resources>
             <Style x:Key="dataGridStyle" TargetType="{x:Type DataGrid}">
@@ -89,6 +100,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="190"/>
                             <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="30"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0"
@@ -108,7 +120,17 @@
                                 Height="22"
                                 Width="130"
                                 Click="NewFabricationButton_Click"/>
-                        <ContentPresenter Grid.Column="2"
+                        <Button Grid.Column="2"
+                                Margin="8,2,0,0"
+                                Width="20"
+                                Height="20"
+                                BorderBrush="White"
+                                Background="White"
+                                ToolTip="Копировать (Ctrl+C)"
+                                Command="{StaticResource Copy}">
+                            <Image Source="view\images\copy.png"/>
+                        </Button>
+                        <ContentPresenter Grid.Column="3"
                                           HorizontalAlignment="Right"
                                           ContentTemplate="{StaticResource FabricationLegend}"/>
                     </Grid>
@@ -265,6 +287,7 @@
                           Height="26">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="190"/>
+                            <ColumnDefinition Width="30"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0"
@@ -277,7 +300,17 @@
                                   MaxDropDownHeight="Auto"
                                   FontWeight="Bold"
                                   HorizontalAlignment="Left"/>
-                        <ContentPresenter Grid.Column="1"
+                        <Button Grid.Column="1"
+                                Margin="12,2,0,0"
+                                Width="20"
+                                Height="20"
+                                BorderBrush="White"
+                                Background="White"
+                                ToolTip="Копировать (Ctrl+C)"
+                                Command="{StaticResource Copy}">
+                            <Image Source="view\images\copy.png"/>
+                        </Button>
+                        <ContentPresenter Grid.Column="2"
                                           HorizontalAlignment="Right"
                                           ContentTemplate="{StaticResource Legend}"/>
                     </Grid>
@@ -358,6 +391,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="190"/>
                             <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="30"/>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <ComboBox Grid.Column="0"
@@ -375,7 +409,17 @@
                             <Label Margin="6,0,0,0" Grid.Column="1">Стоимость:</Label>
                             <Label Content="{Binding Price}" ContentStringFormat=" {0:0.00}"/>
                         </StackPanel>
-                        <ContentPresenter Grid.Column="2"
+                        <Button Grid.Column="2"
+                                Margin="8,2,0,0"
+                                Width="20"
+                                Height="20"
+                                BorderBrush="White"
+                                Background="White"
+                                ToolTip="Копировать (Ctrl+C)"
+                                Command="{StaticResource Copy}">
+                            <Image Source="view\images\copy.png"/>
+                        </Button>
+                        <ContentPresenter Grid.Column="3"
                                           HorizontalAlignment="Right"
                                           ContentTemplate="{StaticResource Legend}"/>
                     </Grid>

@@ -29,6 +29,7 @@ namespace Warehouse
         private static ISqlProvider SqlProvider { get; } = ServiceProvider.GetService<ISqlProvider>();
         private static Sender Sender { get; } = new Sender();
         private MainViewModel Model => DataContext as MainViewModel;
+        private TabViewModel CurrentChildModel { get; set; }
 
         private void ComponentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -192,16 +193,19 @@ namespace Warehouse
 
         private void ComponentTab_Selected(object sender, RoutedEventArgs e)
         {
+            CurrentChildModel = Model.ComponentViewModel;
             Model.ComponentViewModel.Update();
         }
 
         private void ProductTab_Selected(object sender, RoutedEventArgs e)
         {
+            CurrentChildModel = Model.ProductComponentViewModel;
             Model.ProductComponentViewModel.Update();
         }
 
         private void FabricationTab_Selected(object sender, RoutedEventArgs e)
         {
+            CurrentChildModel = Model.FabricationViewModel;
             Model.FabricationViewModel.Update();
         }
 
@@ -276,6 +280,11 @@ namespace Warehouse
                     FabricationsDataGrid.ScrollIntoView(changedFabrication);
                 }
             }
+        }
+
+        private void Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            CurrentChildModel?.Copy();
         }
     }
 }

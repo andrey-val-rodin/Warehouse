@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows;
 using Warehouse.Database;
 using Warehouse.Model;
@@ -85,6 +86,18 @@ namespace Warehouse.ViewModel
             var index = Fabrications.IndexOf(Fabrications.First(c => c.Id == fabrication.Id));
             Fabrications[index] = fabrication;
             CurrentFabrication = fabrication;
+        }
+
+        public override void Copy()
+        {
+            var text = new StringBuilder();
+            text.AppendLine(Fabrication.GetHeader());
+            foreach (var fabrication in Fabrications)
+            {
+                text.AppendLine(fabrication.ToString());
+            }
+
+            Clipboard.SetText(text.ToString());
         }
     }
 }

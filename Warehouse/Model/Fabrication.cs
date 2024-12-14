@@ -17,8 +17,10 @@ namespace Warehouse.Model
         [StringLength(12)]
         public string TableId { get; set; }
 
+        [DisplayName("Номер")]
         public int Number { get; set; }
 
+        [DisplayName("Статус")]
         public FabricationStatus Status { get; set; }
 
         public string StatusText
@@ -73,6 +75,19 @@ namespace Warehouse.Model
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        static public string GetHeader()
+        {
+            return "id\tИзделие\tСтатус\tid стола\tНомер\tКлиент\tЗаметки\tОткрыто\tОжидается\tЗакрыто";
+        }
+
+        public override string ToString()
+        {
+            var s = StartedDate.ToString("yyyy - MM - dd");
+            var e = ExpectedDate == null ? string.Empty : ExpectedDate.Value.ToString("yyyy - MM - dd");
+            var c = ClosedDate == null ? string.Empty : ClosedDate.Value.ToString("yyyy - MM - dd");
+            return $"{Id}\t{ProductName}\t{StatusText}\t{TableId}\t{Number}\t{Client}\t{Details}\t{s}\t{e}\t{c}";
         }
     }
 }
