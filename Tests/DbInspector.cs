@@ -39,7 +39,7 @@ namespace Tests
 
         private void OpenExcel(string pathToXlsx)
         {
-            _stream = File.Open(pathToXlsx, FileMode.Open, FileAccess.Read);
+            _stream = File.Open(pathToXlsx, FileMode.Open, FileAccess.Read, FileShare.Read);
             _reader = ExcelReaderFactory.CreateReader(_stream);
         }
 
