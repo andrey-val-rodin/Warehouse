@@ -41,6 +41,8 @@ namespace Warehouse.Model
         [StringLength(10000)]
         public string Details { get; set; }
 
+        public bool IsUnit { get; set; }
+
         static public Component FromDataRow(DataRow row)
         {
             var result = new Component();

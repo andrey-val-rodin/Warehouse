@@ -343,6 +343,9 @@
                                         <Setter Property="Background" Value="Orange"/>
                                         <Setter Property="BorderBrush" Value="Orange"/>
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:UnitConverter.Instance}}" Value="1">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                             <Style TargetType="DataGridCell">
@@ -452,6 +455,9 @@
                                     <DataTrigger Binding="{Binding Path=., Converter={x:Static view:ComponentConverter.Instance}}" Value="1">
                                         <Setter Property="Background" Value="Orange"/>
                                         <Setter Property="BorderBrush" Value="Orange"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=., Converter={x:Static view:UnitConverter.Instance}}" Value="1">
+                                        <Setter Property="FontWeight" Value="Bold"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

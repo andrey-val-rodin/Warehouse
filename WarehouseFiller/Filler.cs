@@ -9,8 +9,10 @@ namespace WarehouseFiller
         private FileStream _stream;
         private IExcelDataReader _reader;
         private List<Product> _products = [];
+        private HashSet<string> _productNames = [];
         private List<ComponentType> _componentTypes = [];
         private List<Component> _components = [];
+        private HashSet<string> _componentNames = [];
         private SQLiteConnection _connection;
         private bool _disposedValue;
 
@@ -73,6 +75,10 @@ namespace WarehouseFiller
             for (int col = 3, id = 1; col < _reader.FieldCount; col++, id++)
             {
                 var name = _reader.GetString(col);
+                if (_productNames.Contains(name))
+                    throw new FillerException($"Дублирующее название изделия: {name}");
+
+                _productNames.Add(name);
                 if (name.StartsWith("ПС.", StringComparison.InvariantCultureIgnoreCase))
                     isUnit = false;
 
@@ -130,12 +136,17 @@ namespace WarehouseFiller
                     if (componentTypeId == 0)
                         throw new FillerException("Не найдено название первой группы");
 
+                    if (_componentNames.Contains(name))
+                        throw new FillerException($"Дублирующее название комплектующего: {name}");
+                    if (isUnit && !_productNames.Contains(name))
+                        throw new FillerException($"Не найдено имя узла: {name}");
+
+                    _componentNames.Add(name);
                     count++;
                     int? price = _reader.GetValue(1) == null ? null : (int)(_reader.GetDouble(1) * 100);
                     int amount = _reader.GetValue(2) == null ? 0 : (int)_reader.GetDouble(2);
                     var component = new Component
                     {
-                        Row = row,
                         Id = ++componentId,
                         Name = name,
                         Type = componentTypeId,

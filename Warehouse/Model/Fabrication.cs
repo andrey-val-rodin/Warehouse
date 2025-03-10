@@ -65,6 +65,8 @@ namespace Warehouse.Model
         [DisplayName("Закрыто")]
         public DateTime? ClosedDate { get; set; }
 
+        public bool IsUnit { get; set; }
+
         static public Fabrication FromDataRow(DataRow row)
         {
             var result = new Fabrication();

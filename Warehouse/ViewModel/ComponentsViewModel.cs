@@ -63,7 +63,7 @@ namespace Warehouse.ViewModel
 
         public override void Update()
         {
-            _components = new ObservableCollection<Component>(SqlProvider.GetComponents(CurrentType));
+            _components = [.. SqlProvider.GetComponents(CurrentType)];
             RaisePropertyChanged(nameof(Components));
         }
 

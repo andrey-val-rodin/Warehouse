@@ -65,10 +65,9 @@ namespace Warehouse.ViewModel
 
         public override void Update()
         {
-            _fabrications = new ObservableCollection<Fabrication>(
-                IsActiveFabrications
+            _fabrications = [.. IsActiveFabrications
                     ? SqlProvider.GetOpenedFabrications()
-                    : SqlProvider.GetHistoricalFabrications());
+                    : SqlProvider.GetHistoricalFabrications()];
             RaisePropertyChanged(nameof(Fabrications));
         }
 

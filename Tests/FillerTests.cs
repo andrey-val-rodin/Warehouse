@@ -96,6 +96,27 @@ namespace Tests
         }
 
         [Fact]
+        public void Fill_DuplicateComponent_FillerException()
+        {
+            var exception = Assert.Throws<FillerException>(() => _filler.Fill("../../../TestCase11.xlsx", "Components.db"));
+            Assert.Equal("Дублирующее название комплектующего: Столешница.ПС.400  (МДФ 18 мм)", exception.Message);
+        }
+
+        [Fact]
+        public void Fill_DuplicateProduct_FillerException()
+        {
+            var exception = Assert.Throws<FillerException>(() => _filler.Fill("../../../TestCase12.xlsx", "Components.db"));
+            Assert.Equal("Дублирующее название изделия: ПС.400.Фото", exception.Message);
+        }
+
+        [Fact]
+        public void Fill_NoUnit_FillerException()
+        {
+            var exception = Assert.Throws<FillerException>(() => _filler.Fill("../../../TestCase13.xlsx", "Components.db"));
+            Assert.Equal("Не найдено имя узла: Узел платы фото", exception.Message);
+        }
+
+        [Fact]
         public void Fill()
         {
             var filler = new Filler();

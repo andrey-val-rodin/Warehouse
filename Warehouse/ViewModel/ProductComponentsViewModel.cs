@@ -60,8 +60,7 @@ namespace Warehouse.ViewModel
 
         public override void Update()
         {
-            _productComponents = new ObservableCollection<ProductComponent>(
-                SqlProvider.GetProductComponents(CurrentProductIndex + 1));
+            _productComponents = [.. SqlProvider.GetProductComponents(CurrentProductIndex + 1)];
             RaisePropertyChanged(nameof(ProductComponents));
             RaisePropertyChanged(nameof(Price));
         }

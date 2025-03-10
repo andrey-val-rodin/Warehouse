@@ -64,7 +64,8 @@ SELECT
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
     ExpectedDate,
-    Details
+    Details,
+    IsUnit
 FROM Component");
             string query;
             if (typeId > 0)
@@ -159,7 +160,8 @@ SELECT
     CAST(Component.Price AS REAL)/100 AS Price,
     Ordered,
     ExpectedDate,
-    Details
+    Details,
+    Component.IsUnit
 FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @product";
             System.Diagnostics.Debug.WriteLine(query);
@@ -351,7 +353,8 @@ SELECT
     Fabrication.Number,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
-    Fabrication.ClosedDate
+    Fabrication.ClosedDate,
+    Product.IsUnit
 FROM Fabrication
 LEFT JOIN Product ON Fabrication.ProductId = Product.Id
 WHERE Fabrication.Status = 0
@@ -379,7 +382,8 @@ SELECT
     Fabrication.Number,
     Fabrication.StartedDate,
     Fabrication.ExpectedDate,
-    Fabrication.ClosedDate
+    Fabrication.ClosedDate,
+    Product.IsUnit
 FROM Fabrication
 LEFT JOIN Product ON Fabrication.ProductId = Product.Id
 WHERE Fabrication.Status <> 0
