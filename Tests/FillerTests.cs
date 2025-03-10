@@ -98,7 +98,14 @@ namespace Tests
         [Fact]
         public void Fill()
         {
-            _filler.Fill("../../../../Components.xlsx", "Components.db");
+            var filler = new Filler();
+            var excel = "../../../../Components.xlsx";
+            var db = "Components.db";
+            filler.Fill(excel, db);
+            filler.Dispose();
+
+            var inspector = new DbInspector();
+            inspector.AssertDbValid(excel, db);
         }
     }
 }
