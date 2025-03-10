@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warehouse", "Warehouse\Ware
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{40495C51-13B1-4507-80DE-6ED674F70D08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarehouseFiller", "WarehouseFiller\WarehouseFiller.csproj", "{87B22319-7575-BCBC-4805-EFB603DEFF69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{40495C51-13B1-4507-80DE-6ED674F70D08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40495C51-13B1-4507-80DE-6ED674F70D08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40495C51-13B1-4507-80DE-6ED674F70D08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87B22319-7575-BCBC-4805-EFB603DEFF69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87B22319-7575-BCBC-4805-EFB603DEFF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87B22319-7575-BCBC-4805-EFB603DEFF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87B22319-7575-BCBC-4805-EFB603DEFF69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

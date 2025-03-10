@@ -11,9 +11,9 @@ namespace Tests
         public DatabaseFixture()
         {
             var builder = new DatabaseCreator();
-            builder.CreateDatabase("Components.db");
+            builder.CreateDatabase("Components2.db");
             SqlProvider = new SqlProvider();
-            Assert.True(SqlProvider.Connect("Components.db"));
+            Assert.True(SqlProvider.Connect("Components2.db"));
         }
 
         public void Dispose()
