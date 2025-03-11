@@ -17,6 +17,20 @@ namespace WarehouseFiller
         private SQLiteConnection _connection;
         private bool _disposedValue;
 
+        private static string[] BluetoothTables = [
+            "ПС.400.Фото",
+            "ПС.400.Видео",
+            "ПС.600.Фото",
+            "ПС.600.Видео",
+            "ПС.900.Фото",
+            "ПС.900.Видео",
+            "ПС.1200.Фото",
+            "ПС.1200.Видео",
+            "ПС.1500.Фото",
+            "ПС.1500.Видео",
+            "ПС.2000.Фото",
+            "ПС.2000.Видео" ];
+
         static Filler()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -99,7 +113,8 @@ namespace WarehouseFiller
                     Id = id,
                     Name = name,
                     Column = col,
-                    IsUnit = isUnit
+                    IsUnit = isUnit,
+                    IsBluetoothTable = BluetoothTables.Contains(name)
                 };
                 _products.Add(product);
 
@@ -209,10 +224,10 @@ CREATE TABLE Component (
 STRICT;
 
 CREATE TABLE Product (
-    Id      INTEGER PRIMARY KEY AUTOINCREMENT
-                 NOT NULL,
+    Id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     Name    TEXT    NOT NULL,
-    IsUnit  INTEGER NOT NULL CHECK (IsUnit IN (0, 1))
+    IsUnit  INTEGER NOT NULL CHECK (IsUnit IN (0, 1)),
+    IsBluetoothTable INTEGER NOT NULL CHECK (IsBluetoothTable IN (0, 1))
 )
 STRICT;
 
@@ -276,11 +291,12 @@ STRICT;
 
         private void FillProducts()
         {
-            var query = new StringBuilder("INSERT INTO Product (Id, Name, IsUnit) VALUES ");
+            var query = new StringBuilder("INSERT INTO Product (Id, Name, IsUnit, IsBluetoothTable) VALUES ");
             foreach (var p in _products)
             {
                 var isUnit = p.IsUnit ? "1" : "0";
-                query.Append($"({p.Id}, '{p.Name}', {isUnit}),");
+                var isBluetoothTable = p.IsBluetoothTable ? "1" : "0";
+                query.Append($"({p.Id}, '{p.Name}', {isUnit}, {isBluetoothTable}),");
             }
             query.Remove(query.Length - 1, 1);
 

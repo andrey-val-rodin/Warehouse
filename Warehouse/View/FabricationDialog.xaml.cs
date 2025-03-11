@@ -15,9 +15,13 @@ namespace Warehouse.View
         private readonly bool _isReadonly;
         private readonly bool _isCreating;
         private readonly FabricationStatus _originalStatus;
+        private readonly Product[] _products;
 
         public FabricationDialog(Fabrication fabrication = null)
         {
+            _products = SqlProvider.GetProducts().ToArray();
+            TableIdValidationRule.Products = _products;
+
             InitializeComponent();
 
             datePicker.DisplayDateStart = DateTime.Now;
@@ -40,8 +44,7 @@ namespace Warehouse.View
             PrepareStatuses();
             PrepareTableId();
 
-            if (_isReadonly)
-                DisableAll();
+            SetControlStates();
         }
 
         private static ServiceProvider ServiceProvider => ((App)Application.Current).ServiceProvider;
@@ -60,7 +63,7 @@ namespace Warehouse.View
         public bool IsReadonly => _isReadonly;
         public bool IsCreating => _isCreating;
         public bool IsEditing => !_isCreating;
-        private bool IsBluetoothTable() => TableIdValidationRule.BluetoothTables.Contains(Fabrication.ProductId);
+        private bool IsBluetoothTable() => TableIdValidationRule.IsBluetoothTable(Fabrication.ProductId);
 
         private void PrepareProducts()
         {
@@ -112,15 +115,54 @@ namespace Warehouse.View
             tableIdTextBox.IsEnabled = isBluetoothTable;
         }
 
-        private void DisableAll()
+        private void SetControlStates()
         {
-            productComboBox.IsEditable = false;
-            statusComboBox.IsEnabled = false;
-            datePicker.IsEnabled = false;
-            numberTextBox.IsReadOnly = true;
-            tableIdTextBox.IsReadOnly = true;
-            clientTextBox.IsReadOnly = true;
-            detailsTextBox.IsReadOnly = true;
+            if (_isReadonly)
+            {
+                // Disable all
+                productLabel.IsEnabled = false;
+                productComboBox.IsEditable = false;
+                statusLabel.IsEnabled = false;
+                statusComboBox.IsEnabled = false;
+                datePicker.IsEnabled = false;
+                numberLabel.IsEnabled = false;
+                numberTextBox.IsReadOnly = true;
+                tableIdLabel.IsEnabled = false;
+                tableIdTextBox.IsReadOnly = true;
+                clientLabel.IsEnabled = false;
+                clientTextBox.IsReadOnly = true;
+                detailsLabel.IsEnabled = false;
+                detailsTextBox.IsReadOnly = true;
+            }
+            else
+            {
+                if (Fabrication.IsUnit)
+                {
+                    numberLabel.IsEnabled = false;
+                    numberTextBox.IsEnabled = false;
+                    tableIdLabel.IsEnabled = false;
+                    tableIdTextBox.IsEnabled = false;
+                    numberLabel.IsEnabled = false;
+                    numberTextBox.IsEnabled = false;
+                }
+                else
+                {
+                    numberLabel.IsEnabled = true;
+                    numberTextBox.IsEnabled = true;
+                    if (IsBluetoothTable())
+                    {
+                        tableIdLabel.IsEnabled = true;
+                        tableIdTextBox.IsEnabled = true;
+                    }
+                    else
+                    {
+                        tableIdLabel.IsEnabled = false;
+                        tableIdTextBox.IsEnabled = false;
+                    }
+                    numberLabel.IsEnabled = true;
+                    numberTextBox.IsEnabled = true;
+                }
+            }
         }
 
         private void cancelButton_Click(object sender, RoutedEventArgs e)
@@ -214,7 +256,9 @@ namespace Warehouse.View
         {
             Fabrication.ProductId = productComboBox.SelectedIndex + 1;
             Fabrication.ProductName = productComboBox.SelectedItem as string;
+            Fabrication.IsUnit = _products[productComboBox.SelectedIndex].IsUnit;
             PrepareTableId();
+            SetControlStates();
         }
 
         private void StatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

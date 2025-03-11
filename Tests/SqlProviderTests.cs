@@ -87,7 +87,7 @@ namespace Tests
         }
 
         [Fact]
-        public void UpdateAllUnitPrices_PricesAreNotNull()
+        public void UpdateAllUnitPrices_AllPricesAreNull_PricesAreNotNull()
         {
             // Prepare
             var units = SqlProvider.GetComponents(0).Where(c => c.IsUnit);
@@ -107,6 +107,26 @@ namespace Tests
             {
                 Assert.NotNull(u.Price);
             }
+        }
+
+        [Fact]
+        public void GetMissingComponents_AllComponentAmountsAreEqualToZero_ReturnsAllComponents()
+        {
+            // Prepare
+            const int productId = 1;
+            var components = SqlProvider.GetProductComponents(productId);
+            foreach (var c in components)
+            {
+                // Set Amount = 0 in DB
+                c.Amount = 0;
+                SqlProvider.UpdateComponent(c);
+            }
+
+            // Action
+            var newComponents = SqlProvider.GetMissingComponents(productId);
+
+            // Assert
+            Assert.Equal(components.Count(), newComponents.Count());
         }
 
         #region Helpers

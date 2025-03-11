@@ -19,6 +19,10 @@ namespace Warehouse.Tools
 
         public async Task<bool> PostInfoAsync(Fabrication fabrication)
         {
+            // Do not send info anout units
+            if (fabrication.IsUnit)
+                return true;
+
             try
             {
                 var payload = GetRow(fabrication);

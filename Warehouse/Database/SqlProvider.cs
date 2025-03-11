@@ -129,6 +129,21 @@ WHERE Id=@id";
             command.ExecuteNonQuery();
         }
 
+        public IEnumerable<Product> GetProducts()
+        {
+            var ds = new DataSet("Products");
+            var query = "SELECT Id, Name, IsUnit, IsBluetoothTable FROM Product;";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            using var adapter = new SQLiteDataAdapter(command);
+            adapter.Fill(ds);
+
+            foreach (DataRow row in ds.Tables[0].DefaultView.Table.Rows)
+            {
+                yield return Product.FromDataRow(row);
+            }
+        }
+
         public string[] GetProductNames()
         {
             var query = "SELECT Name FROM Product ORDER BY Id ASC";
@@ -236,6 +251,37 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
                 var price = GetProductPrice(productId);
                 component.Price = price;
                 UpdateComponent(component);
+            }
+        }
+
+        public IEnumerable<ProductComponent> GetMissingComponents(int productId)
+        {
+            var ds = new DataSet("Components");
+            var query = @"
+SELECT
+    Component.Id,
+    Component.Name,
+    ProductComponent.Amount AS Required,
+    Component.Amount,
+    Component.AmountInUse,
+    Component.Amount - Component.AmountInUse AS Remainder,
+    CAST(Component.Price AS REAL)/100 AS Price,
+    Ordered,
+    ExpectedDate,
+    Details,
+    Component.IsUnit
+FROM Component
+LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId
+WHERE ProductId = @productId AND Remainder <= 0";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@productId", productId));
+            using var adapter = new SQLiteDataAdapter(command);
+            adapter.Fill(ds);
+
+            foreach (DataRow row in ds.Tables[0].DefaultView.Table.Rows)
+            {
+                yield return ProductComponent.FromDataRow(row);
             }
         }
 

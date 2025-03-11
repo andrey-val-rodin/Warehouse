@@ -4,32 +4,16 @@ using Warehouse.Model;
 
 namespace Warehouse.View
 {
-    /*
-    1	ПС.400.Фото
-    2	ПС.400.Видео
-    3	ПС.400.Пульт
-    4	ПС.400.Корпус
-    5	ПС.600.Фото
-    6	ПС.600.Видео
-    7	ПС.600.Пульт
-    8	ПС.600.Корпус
-    9	ПС.900.Фото
-    10	ПС.900.Видео
-    11	ПС.900.Пульт
-    12	ПС.900.Корпус
-    13	ПС.1200.Фото
-    14	ПС.1200.Видео
-    15	ПС.1200.Пульт
-    16	ПС.1200.Корпус
-    17	ПС.1500.Фото
-    18	ПС.1500.Видео
-    19	ПС.1500.Пульт
-    20	ПС.1500.Корпус
-    */
     public class TableIdValidationRule : ValidationRule
     {
-        public static int[] BluetoothTables = [1, 2, 5, 6, 9, 10, 13, 14, 17, 18];
         static public Fabrication Fabrication { get; set; }
+        static public Product[] Products;
+
+        static public bool IsBluetoothTable(int productId)
+        {
+            var product = Products.FirstOrDefault(p => p.Id == Fabrication.ProductId);
+            return product != null && product.IsBluetoothTable;
+        }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
@@ -46,7 +30,7 @@ namespace Warehouse.View
             else
             {
                 if (Fabrication.Status == FabricationStatus.Closed &&
-                    BluetoothTables.Contains(Fabrication.ProductId))
+                    IsBluetoothTable(Fabrication.ProductId))
                     return new ValidationResult(false, message);
             }
 

@@ -8,11 +8,13 @@ namespace Warehouse.Database
         string[] GetComponentTypes();
         IEnumerable<Component> GetComponents(int typeId);
         void UpdateComponent(Component component);
+        IEnumerable<Product> GetProducts();
         string[] GetProductNames();
         int GetProductId(string productName);
         IEnumerable<ProductComponent> GetProductComponents(int productId);
         decimal GetProductPrice(int productId);
         void UpdateAllUnitPrices();
+        IEnumerable<ProductComponent> GetMissingComponents(int productId);
         bool HasNegativeRemainders(int productId);
         bool HasNegativeAmountAfterClosingFabrication(int productId);
         void AddProductAmountsInUse(int productId);
