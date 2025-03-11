@@ -146,6 +146,24 @@ WHERE Id=@id";
             return [.. result];
         }
 
+        public int GetProductId(string productName)
+        {
+            var query = "SELECT Id FROM Product WHERE Name = @product";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@product", productName));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+            return result;
+        }
+
         private DataView GetProductComponentsDataView(int productId)
         {
             var ds = new DataSet("ProductComponents");
@@ -219,24 +237,6 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
                 component.Price = price;
                 UpdateComponent(component);
             }
-        }
-
-        private int GetProductId(string productName)
-        {
-            var query = "SELECT Id FROM Product WHERE Name = @product";
-            System.Diagnostics.Debug.WriteLine(query);
-            var command = new SQLiteCommand(query, _connection);
-            command.Parameters.Add(new SQLiteParameter("@product", productName));
-#if DEBUG
-            WriteParameters(command);
-#endif
-            var value = command.ExecuteScalar();
-            int result;
-            if (value == null || value is DBNull)
-                result = 0;
-            else
-                result = (int)(long)value;
-            return result;
         }
 
         public bool HasNegativeRemainders(int productId)

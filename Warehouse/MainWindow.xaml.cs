@@ -33,12 +33,47 @@ namespace Warehouse
 
         private void ComponentsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ShowComponentDialog(ComponentsDataGrid, Model.ComponentViewModel);
+            ProcessDoubleClick(ComponentsDataGrid, Model.ComponentViewModel);
         }
 
-        private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void ProductComponentsDataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            ShowComponentDialog(ProductComponentsDataGrid, Model.ProductComponentViewModel);
+            ProcessDoubleClick(ProductComponentsDataGrid, Model.ProductComponentViewModel);
+        }
+
+        private void ProcessDoubleClick(DataGrid source, TabViewModel model)
+        {
+            if (source.SelectedItem is not Component c)
+                return;
+
+            if (c.IsUnit)
+                VisualizeUnit(c);
+            else
+                ShowComponentDialog(source, Model.ProductComponentViewModel);
+        }
+
+        private void VisualizeUnit(Component unit)
+        {
+            var productId = SqlProvider.GetProductId(unit.Name);
+            if (productId == 0)
+                return;
+
+            Dispatcher.BeginInvoke(() => TabControl.SelectedItem = ProductTab);
+            Model.ProductComponentViewModel.CurrentProductIndex = FindProductIndex(unit.Name);
+        }
+
+        private int FindProductIndex(string productName)
+        {
+            int index = 0;
+            foreach (var name in Model.ProductComponentViewModel.ProductNames)
+            {
+                if (name == productName)
+                    return index;
+
+                index++;
+            }
+
+            return -1;
         }
 
         private void ShowComponentDialog(DataGrid source, TabViewModel model)

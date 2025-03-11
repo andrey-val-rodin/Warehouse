@@ -9,6 +9,7 @@ namespace Warehouse.Database
         IEnumerable<Component> GetComponents(int typeId);
         void UpdateComponent(Component component);
         string[] GetProductNames();
+        int GetProductId(string productName);
         IEnumerable<ProductComponent> GetProductComponents(int productId);
         decimal GetProductPrice(int productId);
         void UpdateAllUnitPrices();
