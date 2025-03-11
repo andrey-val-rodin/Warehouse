@@ -1,6 +1,7 @@
 ﻿using ExcelDataReader;
 using System.Data.SQLite;
 using System.Text;
+using Warehouse.Database;
 
 namespace WarehouseFiller
 {
@@ -26,13 +27,24 @@ namespace WarehouseFiller
             ArgumentNullException.ThrowIfNull(pathToXlsx, nameof(pathToXlsx));
             ArgumentNullException.ThrowIfNull(pathToDb, nameof(pathToDb));
 
-            OpenExcel(pathToXlsx);
-            CheckExcel();
-            CreateDatabase(pathToDb);
-            FillGroups();
-            FillComponents();
-            FillProducts();
-            FillProductComponents();
+            try
+            {
+                OpenExcel(pathToXlsx);
+                CheckExcel();
+                CreateDatabase(pathToDb);
+                FillGroups();
+                FillComponents();
+                FillProducts();
+                FillProductComponents();
+
+                Dispose(true);
+                UpdateAllUnitPrices(pathToDb);
+            }
+            catch
+            {
+                Dispose(true);
+                throw;
+            }
         }
 
         private void OpenExcel(string pathToXlsx)
@@ -301,6 +313,15 @@ STRICT;
             command.ExecuteNonQuery();
         }
 
+        private void UpdateAllUnitPrices(string path)
+        {
+            using var sqlProvider = new SqlProvider();
+            if (!sqlProvider.Connect(path))
+                throw new FillerException($"Не удалось открыть {path} для обновления цен узлов");
+
+            sqlProvider.UpdateAllUnitPrices();
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)
@@ -312,6 +333,9 @@ STRICT;
                     _connection?.Dispose();
                 }
 
+                _reader = null;
+                _stream = null;
+                _connection = null;
                 _disposedValue = true;
             }
         }

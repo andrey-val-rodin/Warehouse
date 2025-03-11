@@ -70,6 +70,9 @@ namespace Warehouse
                 if (hasChanges)
                 {
                     SqlProvider.UpdateComponent(dlg.Component);
+                    if (dlg.Component.Price != originalComponent.Price)
+                        SqlProvider.UpdateAllUnitPrices();
+
                     model.Refresh(dlg.Component);
                     source.ScrollIntoView(dlg.Component);
                 }

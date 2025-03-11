@@ -86,6 +86,29 @@ namespace Tests
             }
         }
 
+        [Fact]
+        public void UpdateAllUnitPrices_PricesAreNotNull()
+        {
+            // Prepare
+            var units = SqlProvider.GetComponents(0).Where(c => c.IsUnit);
+            foreach (var u in units)
+            {
+                // Set field Price = NULL in DB
+                u.Price = null;
+                SqlProvider.UpdateComponent(u);
+            }
+
+            // Action
+            SqlProvider.UpdateAllUnitPrices();
+
+            // Assert
+            units = SqlProvider.GetComponents(0).Where(c => c.IsUnit);
+            foreach (var u in units)
+            {
+                Assert.NotNull(u.Price);
+            }
+        }
+
         #region Helpers
         private static IEnumerable<int> GetRequiredValues(IEnumerable<ProductComponent> productComponents)
         {

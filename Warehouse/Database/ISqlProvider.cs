@@ -11,6 +11,7 @@ namespace Warehouse.Database
         string[] GetProductNames();
         IEnumerable<ProductComponent> GetProductComponents(int productId);
         decimal GetProductPrice(int productId);
+        void UpdateAllUnitPrices();
         bool HasNegativeRemainders(int productId);
         bool HasNegativeAmountAfterClosingFabrication(int productId);
         void AddProductAmountsInUse(int productId);

@@ -206,6 +206,39 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             return result;
         }
 
+        public void UpdateAllUnitPrices()
+        {
+            var units = GetComponents(0).Where(c => c.IsUnit);
+            foreach (var component in units)
+            {
+                var productId = GetProductId(component.Name);
+                if (productId == 0)
+                    continue;
+
+                var price = GetProductPrice(productId);
+                component.Price = price;
+                UpdateComponent(component);
+            }
+        }
+
+        private int GetProductId(string productName)
+        {
+            var query = "SELECT Id FROM Product WHERE Name = @product";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@product", productName));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+            return result;
+        }
+
         public bool HasNegativeRemainders(int productId)
         {
             var query = @"
