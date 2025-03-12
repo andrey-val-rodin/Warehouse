@@ -30,6 +30,42 @@ namespace Tests
         private SqlProvider SqlProvider => _fixture.SqlProvider;
 
         [Fact]
+        public void IncrementComponentAmount_ValidAmount()
+        {
+            const int productId = 5;
+            var components = SqlProvider.GetProductComponents(productId);
+            var component = components.FirstOrDefault();
+
+            SqlProvider.IncrementComponentAmount(component.Id);
+
+            Assert.Equal(component.Amount + 1, SqlProvider.GetProductComponents(productId).FirstOrDefault().Amount);
+        }
+
+        [Fact]
+        public void GetComponentId_ValidId()
+        {
+            var products = SqlProvider.GetProducts();
+            var product = products.FirstOrDefault();
+
+            var id = SqlProvider.GetComponentId(product.Name);
+
+            var component = SqlProvider.GetComponents(0).FirstOrDefault(c => c.Id == id);
+            Assert.Equal(product.Name, component.Name);
+        }
+
+        [Fact]
+        public void GetProductId_ValidId()
+        {
+            var components = SqlProvider.GetComponents(0);
+            var component = components.FirstOrDefault(c => c.IsUnit);
+
+            var id = SqlProvider.GetProductId(component.Name);
+
+            var product = SqlProvider.GetProducts().FirstOrDefault(p => p.Id == id);
+            Assert.Equal(component.Name, product.Name);
+        }
+
+        [Fact]
         public void AddProductAmountsInUse_ById7_CorrespondedAmountsInUseWereCorrectlyIncreased()
         {
             var productComponents = SqlProvider.GetProductComponents(7).ToArray();
@@ -110,23 +146,31 @@ namespace Tests
         }
 
         [Fact]
-        public void GetMissingComponents_AllComponentAmountsAreEqualToZero_ReturnsAllComponents()
+        public void GetMissingComponents_DoNotUseActualAmounts_ReturnsAllComponents()
         {
             // Prepare
-            const int productId = 1;
-            var components = SqlProvider.GetProductComponents(productId);
-            foreach (var c in components)
-            {
-                // Set Amount = 0 in DB
-                c.Amount = 0;
-                SqlProvider.UpdateComponent(c);
-            }
+            const int productId = 12;
+            var components = PrepareMissingComponents(productId);
 
             // Action
-            var newComponents = SqlProvider.GetMissingComponents(productId);
+            var newComponents = SqlProvider.GetMissingComponents(productId, false);
 
             // Assert
             Assert.Equal(components.Count(), newComponents.Count());
+        }
+
+        [Fact]
+        public void GetMissingComponents_SufficientQuantityAndUseFreeAmounts_ReturnsEmptyCollection()
+        {
+            // Prepare
+            const int productId = 14;
+            PrepareMissingComponents(productId);
+
+            // Action
+            var newComponents = SqlProvider.GetMissingComponents(productId, true);
+
+            // Assert
+            Assert.Empty(newComponents);
         }
 
         #region Helpers
@@ -153,6 +197,30 @@ namespace Tests
                 yield return component.AmountInUse;
             }
         }
+
+        private IEnumerable<ProductComponent> PrepareMissingComponents(int productId)
+        {
+            var components = SqlProvider.GetProductComponents(productId);
+            foreach (var c in components)
+            {
+                // Set Amount = Required in DB
+                c.Amount = c.Required;
+                c.AmountInUse = 0;
+                SqlProvider.UpdateComponent(c);
+            }
+
+            // There should be sufficient amounts and there should be no missing components:
+            Assert.Empty(SqlProvider.GetMissingComponents(productId, true));
+
+            // Emulate creating new fabrication. This will set all AmountInUse = Required
+            SqlProvider.AddProductAmountsInUse(productId);
+
+            // Now all components are missing
+            Assert.Equal(components.Count(), SqlProvider.GetMissingComponents(productId, false).Count());
+
+            return components;
+        }
+
         #endregion
     }
 }

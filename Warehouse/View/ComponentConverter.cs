@@ -17,7 +17,7 @@ namespace Warehouse.View
                     return 1;
 
                 // level 2 - insufficient amount
-                if (pc.Remainder < pc.Required)
+                if (pc.Amount < pc.Required)
                     return 2;
 
                 // level 3 - no price
@@ -31,7 +31,7 @@ namespace Warehouse.View
                     return 1;
 
                 // level 2 - insufficient amount
-                if (c.Remainder < 1)
+                if (c.Remainder <= 0)
                     return 2;
 
                 // level 3 - no price

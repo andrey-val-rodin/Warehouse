@@ -111,7 +111,7 @@ UPDATE Component SET
     Ordered = @ordered,
     ExpectedDate = @expectedDate,
     Details = @details
-WHERE Id=@id";
+WHERE Id = @id";
             using var command = new SQLiteCommand(query, _connection);
             System.Diagnostics.Debug.WriteLine(query);
             command.Parameters.Add(new SQLiteParameter("@id", component.Id));
@@ -127,6 +127,37 @@ WHERE Id=@id";
             WriteParameters(command);
 #endif
             command.ExecuteNonQuery();
+        }
+
+        public void IncrementComponentAmount(int componentId)
+        {
+            var query = "UPDATE Component SET Amount = Amount + 1 WHERE Id = @id";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+            command.Parameters.Add(new SQLiteParameter("@id", componentId));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            command.ExecuteNonQuery();
+        }
+
+        public int GetComponentId(string componentName)
+        {
+
+            var query = "SELECT Id FROM Component WHERE Name = @component";
+            System.Diagnostics.Debug.WriteLine(query);
+            var command = new SQLiteCommand(query, _connection);
+            command.Parameters.Add(new SQLiteParameter("@component", componentName));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            var value = command.ExecuteScalar();
+            int result;
+            if (value == null || value is DBNull)
+                result = 0;
+            else
+                result = (int)(long)value;
+            return result;
         }
 
         public IEnumerable<Product> GetProducts()
@@ -254,10 +285,32 @@ LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId 
             }
         }
 
-        public IEnumerable<ProductComponent> GetMissingComponents(int productId)
+        public IEnumerable<ProductComponent> GetMissingComponents(int productId, bool useActualAmountsOnly)
         {
-            var ds = new DataSet("Components");
-            var query = @"
+            var ds = new DataSet("ProductComponents");
+            string query;
+            if (useActualAmountsOnly)
+                query = @"
+SELECT
+    Id, Name, Required, Amount, AmountInUse, Remainder, Price, Ordered, ExpectedDate, Details, IsUnit
+    FROM (SELECT
+            Component.Amount - ProductComponent.Amount AS NewAmount,
+            Component.Id,
+            Component.Name,
+            ProductComponent.Amount AS Required,
+            Component.Amount,
+            Component.AmountInUse,
+            Component.Amount - Component.AmountInUse AS Remainder,
+            CAST(Component.Price AS REAL)/100 AS Price,
+            Ordered,
+            ExpectedDate,
+            Details,
+            Component.IsUnit
+        FROM Component
+        LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId
+        WHERE ProductId = @productId AND NewAmount < 0)";
+            else
+                query = @"
 SELECT
     Component.Id,
     Component.Name,
@@ -272,7 +325,8 @@ SELECT
     Component.IsUnit
 FROM Component
 LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId
-WHERE ProductId = @productId AND Remainder <= 0";
+WHERE ProductId = @productId AND Required > Remainder";
+
             System.Diagnostics.Debug.WriteLine(query);
             var command = new SQLiteCommand(query, _connection);
             command.Parameters.Add(new SQLiteParameter("@productId", productId));
@@ -294,34 +348,6 @@ SELECT Remainder FROM
 	FROM Component
 	LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @productId
 	ORDER BY Component.Amount - Component.AmountInUse
-	LIMIT 1
-)
-";
-            System.Diagnostics.Debug.WriteLine(query);
-            var command = new SQLiteCommand(query, _connection);
-            command.Parameters.Add(new SQLiteParameter("@productId", productId));
-#if DEBUG
-            WriteParameters(command);
-#endif
-            var value = command.ExecuteScalar();
-            int result;
-            if (value == null || value is DBNull)
-                result = 0;
-            else
-                result = (int)(long)value;
-
-            return result < 0;
-        }
-
-        public bool HasNegativeAmountAfterClosingFabrication(int productId)
-        {
-            var query = @"
-SELECT NewAmount FROM
-(
-	SELECT Component.Amount - ProductComponent.Amount AS NewAmount
-	FROM Component
-	LEFT JOIN ProductComponent ON Id = ProductComponent.ComponentId WHERE ProductId = @productId
-	ORDER BY NewAmount
 	LIMIT 1
 )
 ";
@@ -555,6 +581,18 @@ WHERE Id=@id";
             command.Parameters.Add(new SQLiteParameter("@closedDate", fabrication.ClosedDate == null
                 ? null
                 : fabrication.ClosedDate.Value.ToString("yyyy-MM-dd")));
+#if DEBUG
+            WriteParameters(command);
+#endif
+            command.ExecuteNonQuery();
+        }
+
+        public void DeleteFabrication(int fabricationId)
+        {
+            var query = "DELETE FROM Fabrication WHERE Id = @fabrication";
+            using var command = new SQLiteCommand(query, _connection);
+            System.Diagnostics.Debug.WriteLine(query);
+            command.Parameters.Add(new SQLiteParameter("@fabrication", fabricationId));
 #if DEBUG
             WriteParameters(command);
 #endif

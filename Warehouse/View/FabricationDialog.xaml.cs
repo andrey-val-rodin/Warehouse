@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +34,6 @@ namespace Warehouse.View
                 fabrication = new Fabrication();
                 // First selection in ProductComboBox
                 fabrication.ProductId = 1;
-                fabrication.Number = SqlProvider.GetMaxFabricationNumber() + 1;
             }
 
             _originalStatus = fabrication.Status;
@@ -191,13 +191,14 @@ namespace Warehouse.View
                     switch (Fabrication.Status)
                     {
                         case FabricationStatus.Closed:
-                            // Check if there are negative remainders
-                            if (SqlProvider.HasNegativeAmountAfterClosingFabrication(Fabrication.ProductId))
+                            var missingComponents = SqlProvider.GetMissingComponents(Fabrication.ProductId, true);
+                            if (missingComponents.Count() > 0)
                             {
-                                MessageBox.Show("Вы не можете закрыть производство, потому что после закрытия одно или несколько значений Наличие станет отрицательным, а это невозможно. Если изделие действительно готово, исправьте текущее наличие комплектующих.",
+                                MessageBox.Show(GetMissingInfo(missingComponents),
                                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                                 return;
                             }
+
                             if (MessageBox.Show("Все использованные компоненты будут вычтены из поля 'Наличие'.\n\nПродолжить?",
                                 "Закрытие производства", MessageBoxButton.YesNo) == MessageBoxResult.No)
                                 return;
@@ -222,6 +223,18 @@ namespace Warehouse.View
             }
 
             DialogResult = true;
+        }
+
+        private static string GetMissingInfo(IEnumerable<Component> components)
+        {
+            var result = new StringBuilder();
+            result.AppendLine("Для закрытия производства в базе не хватает следующих комплектующих:");
+            foreach (var c in components)
+            {
+                result.AppendLine($"  • {c.Name}");
+            }
+
+            return result.ToString();
         }
 
         // Validate all dependency objects in a window
@@ -257,6 +270,8 @@ namespace Warehouse.View
             Fabrication.ProductId = productComboBox.SelectedIndex + 1;
             Fabrication.ProductName = productComboBox.SelectedItem as string;
             Fabrication.IsUnit = _products[productComboBox.SelectedIndex].IsUnit;
+            Fabrication.Number = Fabrication.IsUnit ? 0 : SqlProvider.GetMaxFabricationNumber() + 1;
+            numberTextBox.Text = Fabrication.Number.ToString();
             PrepareTableId();
             SetControlStates();
         }

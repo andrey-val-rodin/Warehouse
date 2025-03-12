@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
+using System.Numerics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -49,7 +51,7 @@ namespace Warehouse
             if (c.IsUnit)
                 VisualizeUnit(c);
             else
-                ShowComponentDialog(source, Model.ProductComponentViewModel);
+                ShowComponentDialog(source, model);
         }
 
         private void VisualizeUnit(Component unit)
@@ -252,12 +254,92 @@ namespace Warehouse
             var fabrication = ShowFabricationDialog(null);
             if (fabrication != null)
             {
-                fabrication.StartedDate = DateTime.Now.Date;
-                SqlProvider.InsertFabrication(fabrication);
-                SqlProvider.AddProductAmountsInUse(fabrication.ProductId);
-                Model.FabricationViewModel.OnInsertNewFabrication(fabrication);
-                Task.Run(async () => await Sender.PostInfoAsync(fabrication));
+                if (CheckMissingComponents(fabrication))
+                {
+                    fabrication.StartedDate = DateTime.Now.Date;
+                    InsertFabrication(fabrication);
+                }
             }
+        }
+
+        private void InsertFabrication(Fabrication fabrication)
+        {
+            SqlProvider.InsertFabrication(fabrication);
+            SqlProvider.AddProductAmountsInUse(fabrication.ProductId);
+            Model.FabricationViewModel.OnInsertNewFabrication(fabrication);
+            Task.Run(async () => await Sender.PostInfoAsync(fabrication));
+        }
+
+        private bool CheckMissingComponents(Fabrication fabrication)
+        {
+            var components = SqlProvider.GetMissingComponents(fabrication.ProductId, true);
+            if (components.Count() == 0)
+                return true;
+
+            var missingUnits = components.Where(c => c.IsUnit).ToArray();
+            var missingComponents = components.Where(c => !c.IsUnit).ToArray();
+            if (MessageBox.Show(GetMissingInfo(missingUnits, missingComponents),
+                "Открытие производства", MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+                return false;
+
+            // Open fabrications of missing units
+            foreach (var unit in missingUnits)
+            {
+                var productId = SqlProvider.GetProductId(unit.Name);
+                int required = unit.Required - unit.Amount - GetOpenedFabricationCount(productId);
+                for (int i = 0; i < required; i++)
+                {
+                    var unitFabrication = new Fabrication
+                    {
+                        ProductId = productId,
+                        Status = FabricationStatus.Opened,
+                        ProductName = unit.Name,
+                        StartedDate = DateTime.Now.Date,
+                        ExpectedDate = fabrication.ExpectedDate,
+                        IsUnit = true
+                    };
+                    InsertFabrication(unitFabrication);
+                }
+            }
+
+            return true;
+        }
+
+        private static int GetOpenedFabricationCount(int productId)
+        {
+            var fabrications = SqlProvider.GetOpenedFabrications().Where(f => f.ProductId == productId);
+            return fabrications.Count();
+        }
+
+        private static string GetMissingInfo(Component[] missingUnits, Component[] missingComponents)
+        {
+            if (missingUnits.Length == 0 && missingComponents.Length == 0)
+                return string.Empty;
+
+            var result = new StringBuilder();
+            if (missingUnits.Length > 0)
+            {
+                result.AppendLine("Не хватает узлов:");
+                foreach (var c in missingUnits)
+                {
+                    result.AppendLine($"  • {c.Name}");
+                }
+                result.AppendLine("Производство недостающих узлов будет автоматически открыто.");
+                result.AppendLine();
+            }
+
+            if (missingComponents.Length > 0)
+            {
+                result.AppendLine("Не хватает компонентов:");
+                foreach (var c in missingComponents)
+                {
+                    result.AppendLine($"  • {c.Name}");
+                }
+            }
+
+            result.AppendLine();
+            result.AppendLine("Открыть производство?");
+            return result.ToString();
         }
 
         private void FabricationsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -293,17 +375,33 @@ namespace Warehouse
                     switch (changedFabrication.Status)
                     {
                         case FabricationStatus.Closed:
-                            changedFabrication.ClosedDate = DateTime.Now.Date;
-                            SqlProvider.UpdateFabrication(changedFabrication);
                             SqlProvider.SubtractProductAmounts(changedFabrication.ProductId);
                             SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
+                            if (changedFabrication.IsUnit)
+                            {
+                                var componentId = SqlProvider.GetComponentId(changedFabrication.ProductName);
+                                SqlProvider.IncrementComponentAmount(componentId);
+                                SqlProvider.DeleteFabrication(changedFabrication.Id);
+                            }
+                            else
+                            {
+                                changedFabrication.ClosedDate = DateTime.Now.Date;
+                                SqlProvider.UpdateFabrication(changedFabrication);
+                            }
                             Model.FabricationViewModel.Update();
                             Task.Run(async () => await Sender.PostInfoAsync(changedFabrication));
                             break;
                         case FabricationStatus.Cancelled:
-                            changedFabrication.ClosedDate = DateTime.Now.Date;
-                            SqlProvider.UpdateFabrication(changedFabrication);
                             SqlProvider.SubtractProductAmountsInUse(changedFabrication.ProductId);
+                            if (changedFabrication.IsUnit)
+                            {
+                                SqlProvider.DeleteFabrication(changedFabrication.Id);
+                            }
+                            else
+                            {
+                                changedFabrication.ClosedDate = DateTime.Now.Date;
+                                SqlProvider.UpdateFabrication(changedFabrication);
+                            }
                             Model.FabricationViewModel.Update();
                             Task.Run(async () => await Sender.PostInfoAsync(changedFabrication));
                             break;

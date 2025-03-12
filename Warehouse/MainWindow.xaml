@@ -183,7 +183,6 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="id" Binding="{Binding Id}" ElementStyle="{StaticResource leftAlign}"/>
                                 <DataGridTextColumn Header="Изделие" Binding="{Binding ProductName}" ElementStyle="{StaticResource leftAlign}"/>
-                                <DataGridTextColumn Header="Номер" Binding="{Binding Number}"/>
                                 <DataGridTextColumn Header="Открыто" Binding="{Binding StartedDate, StringFormat=dd.MM.yyyy}"/>
                                 <DataGridTextColumn Header="Ожидается" Binding="{Binding ExpectedDate, StringFormat=dd.MM.yyyy}"/>
                             </DataGrid.Columns>
